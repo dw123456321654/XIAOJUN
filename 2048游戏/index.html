@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2048游戏</title>
+  <style>
+    /* ==================== CSS变量 ==================== */
+    :root {
+      /* 背景色 */
+      --bg-color: #faf8ef;
+      --grid-bg-color: #bbada0;
+      --cell-bg-color: #cdc1b4;
+
+      /* 文字颜色 */
+      --text-color: #776e65;
+      --text-light-color: #f9f6f2;
+
+      /* 分数盒 */
+      --score-bg-color: #bbada0;
+      --score-label-color: #eee4da;
+      --score-value-color: #ffffff;
+
+      /* 按钮 */
+      --button-bg-color: #8f7a66;
+      --button-hover-color: #7f6a56;
+      --button-text-color: #ffffff;
+
+      /* 字体 */
+      --font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+
+      /* 字体大小 */
+      --title-font-size: 48px;
+      --score-label-font-size: 14px;
+      --score-value-font-size: 20px;
+      --button-font-size: 16px;
+      --instructions-font-size: 14px;
+      --modal-title-font-size: 32px;
+      --modal-text-font-size: 18px;
+
+      /* 字体粗细 */
+      --font-weight-normal: 400;
+      --font-weight-bold: 700;
+
+      /* 间距 */
+      --page-padding: 40px;
+      --title-margin-bottom: 20px;
+      --score-gap: 10px;
+      --score-margin-bottom: 20px;
+      --grid-padding: 10px;
+      --cell-gap: 10px;
+      --cell-size: 80px;
+      --button-margin-top: 20px;
+      --instructions-margin-top: 10px;
+
+      /* 圆角 */
+      --grid-border-radius: 6px;
+      --cell-border-radius: 3px;
+      --button-border-radius: 3px;
+      --modal-border-radius: 6px;
+    }
+
+    /* ==================== 基础样式 ==================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: var(--page-padding);
+    }
+
+    /* ==================== 游戏容器 ==================== */
+    .game-container {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    /* ==================== 标题 ==================== */
+    .game-title {
+      font-size: var(--title-font-size);
+      font-weight: var(--font-weight-bold);
+      color: var(--text-color);
+      margin-bottom: var(--title-margin-bottom);
+    }
+
+    /* ==================== 分数区 ==================== */
+    .score-container {
+      display: flex;
+      justify-content: center;
+      gap: var(--score-gap);
+      margin-bottom: var(--score-margin-bottom);
+    }
+
+    .score-box {
+      background-color: var(--score-bg-color);
+      border-radius: var(--grid-border-radius);
+      padding: 10px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 100px;
+    }
+
+    .score-label {
+      font-size: var(--score-label-font-size);
+      color: var(--score-label-color);
+      text-transform: uppercase;
+    }
+
+    .score-value {
+      font-size: var(--score-value-font-size);
+      font-weight: var(--font-weight-bold);
+      color: var(--score-value-color);
+    }
+
+    /* ==================== 网格容器 ==================== */
+    .grid-container {
+      background-color: var(--grid-bg-color);
+      border-radius: var(--grid-border-radius);
+      padding: var(--grid-padding);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--cell-gap);
+      margin: 0 auto;
+      width: calc(var(--cell-size) * 4 + var(--cell-gap) * 3 + var(--grid-padding) * 2);
+    }
+
+    .grid-cell {
+      background-color: var(--cell-bg-color);
+      border-radius: var(--cell-border-radius);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+      font-weight: var(--font-weight-bold);
+      color: var(--text-color);
+      transition: transform 0.15s ease-in-out;
+      width: var(--cell-size);
+      height: var(--cell-size);
+      box-sizing: border-box;
+    }
+
+    /* ==================== 数字方块样式 ==================== */
+    .tile-empty {
+      background-color: var(--cell-bg-color) !important;
+      color: transparent !important;
+    }
+
+    .tile-2 { background-color: #eee4da; color: #776e65; font-size: 40px; }
+    .tile-4 { background-color: #ede0c8; color: #776e65; font-size: 40px; }
+    .tile-8 { background-color: #f2b179; color: #f9f6f2; font-size: 40px; }
+    .tile-16 { background-color: #f59563; color: #f9f6f2; font-size: 36px; }
+    .tile-32 { background-color: #f67c5f; color: #f9f6f2; font-size: 36px; }
+    .tile-64 { background-color: #f65e3b; color: #f9f6f2; font-size: 36px; }
+    .tile-128 { background-color: #edcf72; color: #f9f6f2; font-size: 32px; }
+    .tile-256 { background-color: #edcc61; color: #f9f6f2; font-size: 32px; }
+    .tile-512 { background-color: #edc850; color: #f9f6f2; font-size: 32px; }
+    .tile-1024 { background-color: #edc53f; color: #f9f6f2; font-size: 26px; }
+    .tile-2048 { background-color: #edc22e; color: #f9f6f2; font-size: 26px; }
+    .tile-super { background-color: #3c3a32; color: #f9f6f2; font-size: 20px; }
+
+    /* ==================== 动画效果 ==================== */
+    @keyframes pop {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1.0); }
+    }
+
+    @keyframes merge {
+      0% { transform: scale(1.0); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1.0); }
+    }
+
+    .tile.new {
+      animation: pop 0.15s ease-in-out;
+    }
+
+    .tile.merged {
+      animation: merge 0.15s ease-in-out;
+    }
+
+    /* ==================== 按钮样式 ==================== */
+    .controls {
+      margin-top: var(--button-margin-top);
+    }
+
+    .btn-restart {
+      background-color: var(--button-bg-color);
+      color: var(--button-text-color);
+      border: none;
+      border-radius: var(--button-border-radius);
+      padding: 12px 30px;
+      font-size: var(--button-font-size);
+      font-weight: var(--font-weight-bold);
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-restart:hover {
+      background-color: var(--button-hover-color);
+    }
+
+    .btn-restart:active {
+      transform: scale(0.95);
+    }
+
+    /* ==================== 提示文字 ==================== */
+    .instructions {
+      margin-top: var(--instructions-margin-top);
+      font-size: var(--instructions-font-size);
+      color: var(--text-color);
+      opacity: 0.8;
+    }
+
+    /* ==================== 游戏结束弹窗 ==================== */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+
+    .modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 40px;
+      border-radius: var(--modal-border-radius);
+      text-align: center;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+      max-width: 90%;
+    }
+
+    .modal.show .modal-content {
+      transform: scale(1.0);
+    }
+
+    .modal-content h2 {
+      font-size: var(--modal-title-font-size);
+      margin-bottom: 20px;
+      color: var(--text-color);
+    }
+
+    .modal-content p {
+      font-size: var(--modal-text-font-size);
+      margin-bottom: 20px;
+      color: var(--text-color);
+    }
+
+    .btn-play-again {
+      background-color: var(--button-bg-color);
+      color: var(--button-text-color);
+      border: none;
+      border-radius: var(--button-border-radius);
+      padding: 12px 30px;
+      font-size: var(--button-font-size);
+      font-weight: var(--font-weight-bold);
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-play-again:hover {
+      background-color: var(--button-hover-color);
+    }
+
+    .btn-play-again:active {
+      transform: scale(0.95);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ==================== 响应式设计 ==================== */
+    @media (max-width: 767px) {
+      body {
+        padding: 20px;
+      }
+
+      .game-title {
+        font-size: 36px;
+      }
+
+      .score-box {
+        min-width: 80px;
+        padding: 8px 15px;
+      }
+
+      .grid-container {
+        gap: 8px;
+        padding: 8px;
+      }
+
+      .grid-cell {
+        font-size: 30px;
+        width: calc((100vw - 40px - 24px) / 4);
+        height: calc((100vw - 40px - 24px) / 4);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <!-- 标题 -->
+    <header class="game-title">2048游戏</header>
+
+    <!-- 分数区 -->
+    <div class="score-container">
+      <div class="score-box">
+        <span class="score-label">分数</span>
+        <span class="score-value" id="score">0</span>
+      </div>
+      <div class="score-box">
+        <span class="score-label">最高分</span>
+        <span class="score-value" id="best-score">0</span>
+      </div>
+    </div>
+
+    <!-- 网格区 -->
+    <div class="grid-container" id="grid">
+      <div class="grid-cell" data-index="0"></div>
+      <div class="grid-cell" data-index="1"></div>
+      <div class="grid-cell" data-index="2"></div>
+      <div class="grid-cell" data-index="3"></div>
+      <div class="grid-cell" data-index="4"></div>
+      <div class="grid-cell" data-index="5"></div>
+      <div class="grid-cell" data-index="6"></div>
+      <div class="grid-cell" data-index="7"></div>
+      <div class="grid-cell" data-index="8"></div>
+      <div class="grid-cell" data-index="9"></div>
+      <div class="grid-cell" data-index="10"></div>
+      <div class="grid-cell" data-index="11"></div>
+      <div class="grid-cell" data-index="12"></div>
+      <div class="grid-cell" data-index="13"></div>
+      <div class="grid-cell" data-index="14"></div>
+      <div class="grid-cell" data-index="15"></div>
+    </div>
+
+    <!-- 控制区 -->
+    <div class="controls">
+      <button id="restart-btn" class="btn-restart">重新开始</button>
+    </div>
+
+    <!-- 提示区 -->
+    <div class="instructions">
+      ↑↓←→ 或滑动移动
+    </div>
+  </div>
+
+  <!-- 游戏结束弹窗 -->
+  <div id="game-over-modal" class="modal">
+    <div class="modal-content">
+      <h2>游戏结束！</h2>
+      <p>最终得分: <span id="final-score">0</span></p>
+      <button id="play-again-btn" class="btn-play-again">再来一局</button>
+    </div>
+  </div>
+
+  <script>
+    /* ==================== 常量定义 ==================== */
+    const GRID_SIZE = 4;
+    const CELL_COUNT = 16;
+    const STORAGE_KEY = 'game2048_best';
+
+    /* ==================== 游戏状态管理模块 (GameState) ==================== */
+    const gameState = {
+      grid: new Array(CELL_COUNT).fill(0),
+      score: 0,
+      bestScore: 0,
+      gameOver: false,
+      isWon: false
+    };
+
+    /**
+     * 获取游戏状态
+     */
+    function getGameState() {
+      return { ...gameState };
+    }
+
+    /**
+     * 获取网格
+     */
+    function getGrid() {
+      return gameState.grid;
+    }
+
+    /**
+     * 设置网格
+     */
+    function setGrid(newGrid) {
+      // 验证 newGrid
+      if (!Array.isArray(newGrid) || newGrid.length !== CELL_COUNT) {
+        console.error('无效的网格数据:', newGrid);
+        return;
+      }
+
+      // 验证每个元素都是有效的数字
+      const validGrid = newGrid.map((value, index) => {
+        if (typeof value !== 'number' || isNaN(value) || value === null || value === undefined) {
+          console.warn(`网格位置 ${index} 有无效值: ${value}，已重置为0`);
+          return 0;
+        }
+        return value;
+      });
+
+      gameState.grid = validGrid;
+    }
+
+    /**
+     * 获取分数
+     */
+    function getScore() {
+      return gameState.score;
+    }
+
+    /**
+     * 增加分数
+     */
+    function addScore(points) {
+      // 确保 points 是有效数字
+      const validPoints = (typeof points === 'number' && !isNaN(points)) ? points : 0;
+      gameState.score += validPoints;
+      if (gameState.score > gameState.bestScore) {
+        gameState.bestScore = gameState.score;
+      }
+    }
+
+    /**
+     * 重置分数
+     */
+    function resetScore() {
+      gameState.score = 0;
+    }
+
+    /**
+     * 获取最高分
+     */
+    function getBestScore() {
+      return gameState.bestScore;
+    }
+
+    /**
+     * 设置最高分
+     */
+    function setBestScore(score) {
+      gameState.bestScore = score;
+    }
+
+    /**
+     * 游戏是否结束
+     */
+    function isGameOver() {
+      return gameState.gameOver;
+    }
+
+    /**
+     * 设置游戏结束状态
+     */
+    function setGameOver(isOver) {
+      gameState.gameOver = isOver;
+    }
+
+    /**
+     * 游戏是否胜利
+     */
+    function isWon() {
+      return gameState.isWon;
+    }
+
+    /**
+     * 设置游戏胜利状态
+     */
+    function setWon(won) {
+      gameState.isWon = won;
+    }
+
+    /**
+     * 重置游戏状态
+     */
+    function resetGameState() {
+      gameState.grid = new Array(CELL_COUNT).fill(0);
+      gameState.score = 0;
+      gameState.gameOver = false;
+      gameState.isWon = false;
+    }
+
+    /* ==================== 合并逻辑模块 (MergeLogic) ==================== */
+    /**
+     * 合并数组中的相同数字
+     * @param {Array} arr 数字数组
+     * @param {number} targetLength 目标长度（用于补齐0）
+     * @returns {Object} { result, score }
+     */
+    function mergeArray(arr, targetLength = null) {
+      let result = [];
+      let skipNext = false;
+      let score = 0;
+
+      for (let i = 0; i < arr.length; i++) {
+        if (skipNext) {
+          skipNext = false;
+          continue;
+        }
+
+        if (i + 1 < arr.length && arr[i] !== 0 && arr[i] === arr[i + 1]) {
+          // 合并
+          const merged = arr[i] * 2;
+          result.push(merged);
+          score += merged;
+          skipNext = true;
+
+          // 检查是否达到2048
+          if (merged === 2048) {
+            setWon(true);
+          }
+        } else {
+          // 不合并
+          result.push(arr[i]);
+        }
+      }
+
+      // 补齐0到目标长度
+      const lengthToFill = targetLength !== null ? targetLength : arr.length;
+      while (result.length < lengthToFill) {
+        result.push(0);
+      }
+
+      return { result, score };
+    }
+
+    /* ==================== 移动逻辑模块 (MoveLogic) ==================== */
+    /**
+     * 向左移动一行
+     * @param {Array} row 一行的数字
+     * @returns {Object} { result, moved, score }
+     */
+    function moveRow(row) {
+      const originalLength = row.length;  // 保存原始长度
+
+      // 1. 移除0
+      let filtered = row.filter(val => val !== 0);
+
+      // 2. 合并相同数字（传递原始长度）
+      const { result: merged, score } = mergeArray(filtered, originalLength);
+
+      // 3. 判断是否移动
+      const moved = JSON.stringify(row) !== JSON.stringify(merged);
+
+      return { result: merged, moved, score };
+    }
+
+    /**
+     * 向左移动
+     * @returns {Object} { grid, moved, score }
+     */
+    function moveLeft() {
+      const grid = getGrid();
+      let newGrid = [];
+      let moved = false;
+      let totalScore = 0;
+
+      // 按行处理（0,1,2,3）是一行
+      for (let row = 0; row < GRID_SIZE; row++) {
+        const rowStart = row * GRID_SIZE;
+        const rowEnd = rowStart + GRID_SIZE;
+        const currentRow = grid.slice(rowStart, rowEnd);
+
+        const { result, moved: rowMoved, score } = moveRow(currentRow);
+        newGrid = newGrid.concat(result);
+
+        if (rowMoved) moved = true;
+        totalScore += score;
+      }
+
+      return { grid: newGrid, moved, score: totalScore || 0 };
+    }
+
+    /**
+     * 向右移动
+     * @returns {Object} { grid, moved, score }
+     */
+    function moveRight() {
+      const grid = getGrid();
+      let newGrid = [];
+      let moved = false;
+      let totalScore = 0;
+
+      // 按行处理，反向
+      for (let row = 0; row < GRID_SIZE; row++) {
+        const rowStart = row * GRID_SIZE;
+        const rowEnd = rowStart + GRID_SIZE;
+        const currentRow = grid.slice(rowStart, rowEnd);
+
+        // 反转 -> 向左移动 -> 反转
+        const reversed = [...currentRow].reverse();
+        const { result, moved: rowMoved, score } = moveRow(reversed);
+        const finalResult = [...result].reverse();
+
+        newGrid = newGrid.concat(finalResult);
+
+        if (rowMoved) moved = true;
+        totalScore += score;
+      }
+
+      return { grid: newGrid, moved, score: totalScore };
+    }
+
+    /**
+     * 向上移动一列
+     * @param {Array} col 一列的数字
+     * @returns {Object} { result, moved, score }
+     */
+    function moveColumn(col) {
+      return moveRow(col);
+    }
+
+    /**
+     * 向上移动
+     * @returns {Object} { grid, moved, score }
+     */
+    function moveUp() {
+      const grid = getGrid();
+      let newGrid = new Array(CELL_COUNT).fill(0);
+      let moved = false;
+      let totalScore = 0;
+
+      // 按列处理（0,4,8,12）是一列
+      for (let col = 0; col < GRID_SIZE; col++) {
+        let column = [];
+        for (let row = 0; row < GRID_SIZE; row++) {
+          column.push(grid[row * GRID_SIZE + col]);
+        }
+
+        const { result, moved: colMoved, score } = moveColumn(column);
+
+        // 将结果放回网格
+        for (let row = 0; row < GRID_SIZE; row++) {
+          newGrid[row * GRID_SIZE + col] = result[row];
+        }
+
+        if (colMoved) moved = true;
+        totalScore += score;
+      }
+
+      return { grid: newGrid, moved, score: totalScore || 0 };
+    }
+
+    /**
+     * 向下移动
+     * @returns {Object} { grid, moved, score }
+     */
+    function moveDown() {
+      const grid = getGrid();
+      let newGrid = new Array(CELL_COUNT).fill(0);
+      let moved = false;
+      let totalScore = 0;
+
+      // 按列处理，反向
+      for (let col = 0; col < GRID_SIZE; col++) {
+        let column = [];
+        for (let row = 0; row < GRID_SIZE; row++) {
+          column.push(grid[row * GRID_SIZE + col]);
+        }
+
+        // 反转 -> 向上移动 -> 反转
+        const reversed = [...column].reverse();
+        const { result, moved: colMoved, score } = moveColumn(reversed);
+        const finalResult = [...result].reverse();
+
+        // 将结果放回网格
+        for (let row = 0; row < GRID_SIZE; row++) {
+          newGrid[row * GRID_SIZE + col] = finalResult[row];
+        }
+
+        if (colMoved) moved = true;
+        totalScore += score;
+      }
+
+      return { grid: newGrid, moved, score: totalScore || 0 };
+    }
+
+    /* ==================== 生成逻辑模块 (GenerateLogic) ==================== */
+    /**
+     * 生成新数字
+     * @param {Array} grid 当前网格
+     * @returns {Object} { newGrid, position, value }
+     */
+    function generateNewNumber(grid) {
+      // 1. 找到所有空白位置
+      const emptyPositions = [];
+      for (let i = 0; i < grid.length; i++) {
+        if (grid[i] === 0) {
+          emptyPositions.push(i);
+        }
+      }
+
+      // 2. 如果没有空白位置，返回原网格
+      if (emptyPositions.length === 0) {
+        return { newGrid: grid, position: null, value: null };
+      }
+
+      // 3. 随机选择一个空白位置
+      const randomIndex = Math.floor(Math.random() * emptyPositions.length);
+      const position = emptyPositions[randomIndex];
+
+      // 4. 生成数字（90%概率为2，10%概率为4）
+      const value = Math.random() < 0.9 ? 2 : 4;
+
+      // 5. 更新网格
+      const newGrid = [...grid];
+      newGrid[position] = value;
+
+      return { newGrid, position, value };
+    }
+
+    /**
+     * 生成初始2个数字
+     */
+    function generateInitialNumbers() {
+      const grid = getGrid();
+      const { newGrid: grid1 } = generateNewNumber(grid);
+      const { newGrid: grid2 } = generateNewNumber(grid1);
+      setGrid(grid2);
+    }
+
+    /* ==================== 数据存储模块 (StorageService) ==================== */
+    /**
+     * 保存最高分
+     * @param {number} score 分数
+     */
+    function saveBestScore(score) {
+      try {
+        localStorage.setItem(STORAGE_KEY, score.toString());
+      } catch (e) {
+        console.warn('localStorage不可用，无法保存最高分');
+      }
+    }
+
+    /**
+     * 读取最高分
+     * @returns {number} 最高分
+     */
+    function loadBestScore() {
+      try {
+        const value = localStorage.getItem(STORAGE_KEY);
+        return value ? parseInt(value, 10) : 0;
+      } catch (e) {
+        console.warn('localStorage不可用，无法读取最高分');
+        return 0;
+      }
+    }
+
+    /* ==================== 工具函数模块 (Utils) ==================== */
+    /**
+     * 检查游戏是否结束
+     * @param {Array} grid 网格
+     * @returns {boolean}
+     */
+    function checkGameOver(grid) {
+      // 1. 检查是否有空白位置
+      if (grid.includes(0)) {
+        return false;
+      }
+
+      // 2. 检查是否有可合并的相邻数字
+      // 水平方向
+      for (let row = 0; row < GRID_SIZE; row++) {
+        for (let col = 0; col < GRID_SIZE - 1; col++) {
+          const i = row * GRID_SIZE + col;
+          if (grid[i] === grid[i + 1]) {
+            return false;
+          }
+        }
+      }
+
+      // 垂直方向
+      for (let row = 0; row < GRID_SIZE - 1; row++) {
+        for (let col = 0; col < GRID_SIZE; col++) {
+          const i = row * GRID_SIZE + col;
+          if (grid[i] === grid[i + GRID_SIZE]) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    /**
+     * 数字对应的CSS类名
+     * @param {number} value 数字值
+     * @returns {string}
+     */
+    function getTileClass(value) {
+      // 验证 value
+      if (typeof value !== 'number' || isNaN(value) || value === null || value === undefined) {
+        return 'tile-empty';
+      }
+
+      const classes = {
+        0: 'tile-empty',
+        2: 'tile-2',
+        4: 'tile-4',
+        8: 'tile-8',
+        16: 'tile-16',
+        32: 'tile-32',
+        64: 'tile-64',
+        128: 'tile-128',
+        256: 'tile-256',
+        512: 'tile-512',
+        1024: 'tile-1024',
+        2048: 'tile-2048'
+      };
+
+      return classes[value] || 'tile-super';
+    }
+
+    /* ==================== UI渲染模块 (UIRenderer) ==================== */
+    /**
+     * 初始化UI
+     */
+    function initUI() {
+      // 绑定重新开始按钮
+      document.getElementById('restart-btn').addEventListener('click', restartGame);
+      document.getElementById('play-again-btn').addEventListener('click', restartGame);
+    }
+
+    /**
+     * 渲染网格
+     * @param {Array} grid 网格数据
+     * @param {number} newPosition 新数字位置（可选）
+     */
+    function renderGrid(grid, newPosition = null) {
+      const cells = document.querySelectorAll('.grid-cell');
+
+      cells.forEach((cell, index) => {
+        // 确保索引有效
+        if (index >= grid.length) {
+          console.warn(`索引 ${index} 超出网格范围`);
+          return;
+        }
+
+        let value = grid[index];
+
+        // 验证 value：必须是数字且有效
+        if (typeof value !== 'number' || isNaN(value) || value === null || value === undefined) {
+          value = 0;
+        }
+
+        // 清除旧类
+        cell.className = 'grid-cell';
+
+        if (value === 0) {
+          // 空格
+          cell.textContent = '';
+          cell.classList.add('tile-empty');
+        } else {
+          // 数字
+          cell.textContent = value;
+          const tileClass = getTileClass(value);
+          if (tileClass) {
+            cell.classList.add(tileClass);
+          }
+
+          // 新数字动画
+          if (index === newPosition) {
+            cell.classList.add('new');
+          }
+        }
+      });
+    }
+
+    /**
+     * 更新分数
+     * @param {number} score 分数
+     */
+    function updateScore(score) {
+      // 验证分数
+      const validScore = (typeof score === 'number' && !isNaN(score)) ? score : 0;
+      document.getElementById('score').textContent = validScore;
+    }
+
+    /**
+     * 更新最高分
+     * @param {number} bestScore 最高分
+     */
+    function updateBestScore(bestScore) {
+      // 验证分数
+      const validScore = (typeof bestScore === 'number' && !isNaN(bestScore)) ? bestScore : 0;
+      document.getElementById('best-score').textContent = validScore;
+    }
+
+    /**
+     * 显示游戏结束弹窗
+     * @param {number} finalScore 最终分数
+     */
+    function showGameOver(finalScore) {
+      // 验证分数
+      const validScore = (typeof finalScore === 'number' && !isNaN(finalScore)) ? finalScore : 0;
+      document.getElementById('final-score').textContent = validScore;
+      document.getElementById('game-over-modal').classList.add('show');
+    }
+
+    /**
+     * 隐藏游戏结束弹窗
+     */
+    function hideGameOver() {
+      document.getElementById('game-over-modal').classList.remove('show');
+    }
+
+    /* ==================== 输入处理模块 (InputHandler) ==================== */
+    /**
+     * 处理移动后的逻辑
+     * @param {number} score 本次移动得分
+     * @param {Array} movedGrid 移动后的网格
+     */
+    function handleMove(score, movedGrid) {
+      // 确保 score 是有效数字
+      const validScore = score || 0;
+
+      // 1. 先设置移动后的网格
+      setGrid(movedGrid);
+
+      // 2. 更新分数
+      addScore(validScore);
+
+      // 3. 保存最高分
+      if (getScore() > getBestScore()) {
+        saveBestScore(getScore());
+      }
+
+      // 4. 生成新数字
+      const { newGrid, position } = generateNewNumber(movedGrid);
+      setGrid(newGrid);
+
+      // 5. 渲染UI
+      renderGrid(newGrid, position);
+      updateScore(getScore());
+      updateBestScore(getBestScore());
+
+      // 6. 检查游戏是否结束
+      if (checkGameOver(newGrid)) {
+        setGameOver(true);
+        showGameOver(getScore());
+      }
+    }
+
+    /**
+     * 处理键盘事件
+     * @param {KeyboardEvent} e
+     */
+    function handleKeyDown(e) {
+      // 游戏结束后不处理
+      if (isGameOver()) {
+        return;
+      }
+
+      let moved = false;
+      let score = 0;
+      let newGrid = null;
+
+      switch (e.key) {
+        case 'ArrowUp':
+          const resultUp = moveUp();
+          moved = resultUp.moved;
+          score = resultUp.score;
+          newGrid = resultUp.grid;
+          break;
+        case 'ArrowDown':
+          const resultDown = moveDown();
+          moved = resultDown.moved;
+          score = resultDown.score;
+          newGrid = resultDown.grid;
+          break;
+        case 'ArrowLeft':
+          const resultLeft = moveLeft();
+          moved = resultLeft.moved;
+          score = resultLeft.score;
+          newGrid = resultLeft.grid;
+          break;
+        case 'ArrowRight':
+          const resultRight = moveRight();
+          moved = resultRight.moved;
+          score = resultRight.score;
+          newGrid = resultRight.grid;
+          break;
+        default:
+          return; // 非方向键，不处理
+      }
+
+      if (moved) {
+        // 阻止默认滚动行为
+        e.preventDefault();
+        handleMove(score || 0, newGrid);
+      }
+    }
+
+    /**
+     * 处理触摸事件（滑动）
+     */
+    let touchStartX, touchStartY;
+
+    function handleTouchStart(e) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }
+
+    function handleTouchEnd(e) {
+      // 游戏结束后不处理
+      if (isGameOver()) {
+        return;
+      }
+
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+
+      // 最小滑动距离：50px
+      if (Math.abs(deltaX) < 50 && Math.abs(deltaY) < 50) {
+        return; // 滑动距离太小，不处理
+      }
+
+      let moved = false;
+      let score = 0;
+      let newGrid = null;
+
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // 水平滑动
+        if (deltaX > 0) {
+          const resultRight = moveRight();
+          moved = resultRight.moved;
+          score = resultRight.score;
+          newGrid = resultRight.grid;
+        } else {
+          const resultLeft = moveLeft();
+          moved = resultLeft.moved;
+          score = resultLeft.score;
+          newGrid = resultLeft.grid;
+        }
+      } else {
+        // 垂直滑动
+        if (deltaY > 0) {
+          const resultDown = moveDown();
+          moved = resultDown.moved;
+          score = resultDown.score;
+          newGrid = resultDown.grid;
+        } else {
+          const resultUp = moveUp();
+          moved = resultUp.moved;
+          score = resultUp.score;
+          newGrid = resultUp.grid;
+        }
+      }
+
+      if (moved) {
+        // 阻止默认行为
+        e.preventDefault();
+        handleMove(score || 0, newGrid);
+      }
+    }
+
+    /**
+     * 初始化输入监听
+     */
+    function initInput() {
+      // 键盘事件
+      document.addEventListener('keydown', handleKeyDown);
+
+      // 触摸事件
+      document.addEventListener('touchstart', handleTouchStart, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd, { passive: false });
+    }
+
+    /* ==================== 重新开始 ==================== */
+    /**
+     * 重新开始游戏
+     */
+    function restartGame() {
+      // 重置游戏状态
+      resetGameState();
+
+      // 生成初始数字
+      generateInitialNumbers();
+
+      // 渲染UI
+      renderGrid(getGrid());
+      updateScore(getScore());
+      updateBestScore(getBestScore());
+
+      // 隐藏游戏结束弹窗
+      hideGameOver();
+    }
+
+    /* ==================== 初始化 ==================== */
+    window.onload = function() {
+      console.log('2048游戏初始化...');
+
+      // 初始化UI
+      initUI();
+
+      // 初始化输入监听
+      initInput();
+
+      // 读取最高分
+      const bestScore = loadBestScore();
+      setBestScore(bestScore);
+
+      // 生成初始数字
+      generateInitialNumbers();
+
+      // 渲染UI
+      renderGrid(getGrid());
+      updateScore(getScore());
+      updateBestScore(getBestScore());
+
+      console.log('2048游戏初始化完成！');
+    };
+  </script>
+</body>
+</html>
