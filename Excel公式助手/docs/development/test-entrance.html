@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel公式助手 - 测试入口</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0 0 10px 0;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            font-size: 24px;
+            color: #333;
+            margin: 0 0 20px 0;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .link-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .link-card:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-card h3 {
+            font-size: 16px;
+            margin: 0 0 8px 0;
+            color: #333;
+        }
+
+        .link-card p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .link-card .url {
+            margin-top: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #999;
+            word-break: break-all;
+        }
+
+        .v2-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .section-item {
+            margin-bottom: 20px;
+        }
+
+        .section-item h3 {
+            font-size: 18px;
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+
+        .checklist {
+            margin-left: 20px;
+        }
+
+        .checklist li {
+            margin: 8px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .checklist li input {
+            margin-right: 8px;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            color: #1e40af;
+            font-size: 18px;
+        }
+
+        .info-box p {
+            margin: 0 0 8px 0;
+            color: #1e40af;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .info-box code {
+            background: #1e293b;
+            color: #a5b4fc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .test-file-section {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .test-file-section h3 {
+            margin: 0 0 10px 0;
+            color: #92400e;
+            font-size: 18px;
+        }
+
+        .test-file-section p {
+            margin: 0;
+            color: #92400e;
+            font-size: 14px;
+        }
+
+        .test-file-section .file-link {
+            background: #f59e0b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .test-file-section .file-link:hover {
+            background: #d97706;
+        }
+
+        .report-section {
+            background: #d1fae5;
+            border-left: 4px solid #0ea5e9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .report-section h3 {
+            margin: 0 0 10px 0;
+            color: #0f766e;
+            font-size: 18px;
+        }
+
+        .report-section .report-links {
+            margin-top: 10px;
+        }
+
+        .report-section a {
+            background: #0ea5e9;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            display: inline-block;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-top: 8px;
+        }
+
+        .report-section a:hover {
+            background: #059669;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Excel公式助手 - 测试入口</h1>
+            <p>V2.0.0版本 - 2026-03-29</p>
+        </div>
+
+        <div class="info-box">
+            <h3>💡 测试说明</h3>
+            <p>开发服务器已启动，访问地址：<code>http://localhost:5173</code></p>
+            <p>以下按功能分类列出了所有测试入口，建议按顺序进行测试</p>
+        </div>
+
+        <div class="section">
+            <h2>🚀 MVP核心功能测试 <span class="v2-badge">V1.0</span></h2>
+            <div class="links-grid">
+                <a href="http://localhost:5173/" class="link-card">
+                    <h3>🏠 主页</h3>
+                    <p>测试主页加载、快捷入口</p>
+                    <div class="url">http://localhost:5173/</div>
+                </a>
+                <a href="http://localhost:5173/formulas" class="link-card">
+                    <h3>📚 公式浏览</h3>
+                    <p>测试公式列表、筛选、搜索</p>
+                    <div class="url">http://localhost:5173/formulas</div>
+                </a>
+                <a href="http://localhost:5173/practice" class="link-card">
+                    <h3>📝 练习</h3>
+                    <p>测试练习题列表、答题、验证</p>
+                    <div class="url">http://localhost:5173/practice</div>
+                </a>
+                <a href="http://localhost:5173/favorites" class="link-card">
+                    <h3>⭐ 收藏</h3>
+                    <p>测试收藏列表、取消收藏</p>
+                    <div class="url">http://localhost:5173/favorites</div>
+                </a>
+                <a href="http://localhost:5173/compare" class="link-card">
+                    <h3>⚖️ 公式对比</h3>
+                    <p>测试公式对比、自动推荐</p>
+                    <div class="url">http://localhost:5173/compare</div>
+                </a>
+                <a href="http://localhost:5173/recommend" class="link-card">
+                    <h3>🎯 推荐</h3>
+                    <p>测试推荐列表、个性化推荐</p>
+                    <div class="url">http://localhost:5173/recommend</div>
+                </a>
+                <a href="http://localhost:5173/learning-paths" class="link-card">
+                    <h3>📋 学习路径</h3>
+                    <p>测试学习路径、进度追踪</p>
+                    <div class="url">http://localhost:5173/learning-paths</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>✨ V2.0功能测试 <span class="v2-badge">V2.0</span></h2>
+            <div class="links-grid">
+                <a href="http://localhost:5173/real-cases" class="link-card">
+                    <h3>📂 实战案例</h3>
+                    <p>测试20个案例、筛选、详情、下载</p>
+                    <div class="url">http://localhost:5173/real-cases</div>
+                </a>
+                <a href="http://localhost:5173/real-cases/submit" class="link-card">
+                    <h3>➕ 个人案例提交</h3>
+                    <p>测试案例提交、步骤管理、公式管理</p>
+                    <div class="url">http://localhost:5173/real-cases/submit</div>
+                </a>
+                <a href="http://localhost:5173/combinations" class="link-card">
+                    <h3>🔗 公式组合</h3>
+                    <p>测试10个组合、筛选、练习</p>
+                    <div class="url">http://localhost:5173/combinations</div>
+                </a>
+                <a href="http://localhost:5173/combinations/generator" class="link-card">
+                    <h3>🧩 组合公式生成器</h3>
+                    <p>测试公式选择、生成类型、自动生成</p>
+                    <div class="url">http://localhost:5173/combinations/generator</div>
+                </a>
+                <a href="http://localhost:5173/practice/interactive" class="link-card">
+                    <h3>📊 交互式练习</h3>
+                    <p>测试3种模式、表格编辑器、公式计算</p>
+                    <div class="url">http://localhost:5173/practice/interactive</div>
+                </a>
+                <a href="http://localhost:5173/settings" class="link-card">
+                    <h3>📤 上传Excel</h3>
+                    <p>测试文件上传、拖拽、解析</p>
+                    <div class="url">http://localhost:5173/settings → 点击"上传Excel"</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📤 用户上传Excel功能测试 <span class="v2-badge">V2.0</span></h2>
+            <div class="section-item">
+                <h3>1. 上传Excel</h3>
+                <a href="http://localhost:5173/settings" class="link-card">
+                    <h3>📤 进入上传页面</h3>
+                    <p>在设置页点击"上传Excel"按钮</p>
+                    <div class="url">http://localhost:5173/settings</div>
+                </a>
+            </div>
+            <div class="section-item">
+                <h3>2. 公式分析</h3>
+                <a href="http://localhost:5173/upload/analysis" class="link-card">
+                    <h3>📊 进入分析页面</h3>
+                    <p>上传后自动跳转，查看统计、图表</p>
+                    <div class="url">http://localhost:5173/upload/analysis</div>
+                </a>
+            </div>
+            <div class="section-item">
+                <h3>3. 优化建议</h3>
+                <a href="http://localhost:5173/upload/optimization-suggestions" class="link-card">
+                    <h3>⚡ 查看优化建议</h3>
+                    <p>查看性能优化、功能升级、错误风险</p>
+                    <div class="url">http://localhost:5173/upload/optimization-suggestions</div>
+                </a>
+            </div>
+            <div class="section-item">
+                <h3>4. 学习路径</h3>
+                <a href="http://localhost:5173/upload/learning-path" class="link-card">
+                    <h3>📚 生成学习路径</h3>
+                    <p>查看已掌握公式、推荐学习、7天计划</p>
+                    <div class="url">http://localhost:5173/upload/learning-path</div>
+                </a>
+            </div>
+            <div class="section-item">
+                <h3>5. 案例生成</h3>
+                <a href="http://localhost:5173/upload/case-generator" class="link-card">
+                    <h3>📂 生成个性化案例</h3>
+                    <p>查看生成的案例、保存到个人案例</p>
+                    <div class="url">http://localhost:5173/upload/case-generator</div>
+                </a>
+            </div>
+            <div class="section-item">
+                <h3>6. 模板保存</h3>
+                <a href="http://localhost:5173/upload/template-manager" class="link-card">
+                    <h3>💾 保存模板</h3>
+                    <p>保存当前模板、管理已保存模板</p>
+                    <div class="url">http://localhost:5173/upload/template-manager</div>
+                </a>
+            </div>
+            <div class="section-item">
+                <h3>7. 公式提取</h3>
+                <a href="http://localhost:5173/upload/formula-extractor" class="link-card">
+                    <h3>📤 提取公式</h3>
+                    <p>提取所有公式、筛选、导出（文本/JSON）</p>
+                    <div class="url">http://localhost:5173/upload/formula-extractor</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="test-file-section">
+            <h3>📋 测试Excel文件</h3>
+            <p>已为您创建一个测试CSV文件，包含10个产品的销售数据</p>
+            <p>文件位置：<code>docs/development/test-sales.xlsx</code></p>
+            <p>文件内容：产品ID、产品名称、价格、数量、销售额</p>
+            <a href="docs/development/test-sales.xlsx" class="file-link">📥 下载测试CSV文件</a>
+        </div>
+
+        <div class="report-section">
+            <h3>📄 测试报告</h3>
+            <p>查看详细的测试报告：</p>
+            <div class="report-links">
+                <a href="docs/development/测试报告-2026-03-29.md">📊 功能测试报告</a>
+                <a href="docs/development/边界条件测试报告-2026-03-29.md">🧪 边界条件测试报告</a>
+                <a href="docs/development/性能测试报告-2026-03-29.md">⚡ 性能测试报告</a>
+                <a href="docs/development/兼容性测试报告-2026-03-29.md">🌐 兼容性测试报告</a>
+                <a href="docs/development/安全性测试报告-2026-03-29.md">🔒 安全性测试报告</a>
+                <a href="docs/development/回归测试报告-2026-03-29.md">🔄 回归测试报告</a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📝 测试检查清单</h2>
+            <ul class="checklist">
+                <li><input type="checkbox"> 核心功能测试（主页、公式浏览、练习、收藏、对比）</li>
+                <li><input type="checkbox"> V2.0功能测试（实战案例、公式组合、交互式练习）</li>
+                <li><input type="checkbox"> 用户上传Excel测试（上传、分析、优化、学习路径、案例生成、模板保存、公式提取）</li>
+                <li><input type="checkbox"> 边界条件测试（空数据、大数据量、特殊字符）</li>
+                <li><input type="checkbox"> 性能测试（页面加载、运行时性能、内存使用）</li>
+                <li><input type="checkbox"> 兼容性测试（不同浏览器、不同屏幕尺寸）</li>
+                <li><input type="checkbox"> 安全性测试（XSS防护、数据注入）</li>
+                <li><input type="checkbox"> 回归测试（第一轮、第二轮）</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>💡 测试提示：建议按顺序测试，发现问题随时告诉我！</p>
+            <p>⏰ 预计测试时间：30-60分钟</p>
+        </div>
+    </div>
+</body>
+</html>

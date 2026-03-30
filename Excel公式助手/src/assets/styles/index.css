@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+/* ====== 深色主题 ====== */
+
+/* 基础样式 */
+html.dark body {
+  background-color: #111111;
+  color: #e5e7eb;
+}
+
+/* 通用容器 */
+html.dark .home-container,
+html.dark .formulas-container,
+html.dark .formula-detail-container,
+html.dark .practice-container,
+html.dark .compare-container,
+html.dark .favorites-container,
+html.dark .recommend-container,
+html.dark .learning-paths-container,
+html.dark .real-cases-container,
+html.dark .combinations-container,
+html.dark .settings-container {
+  background: #111111;
+}
+
+/* 通用头部 */
+html.dark .header {
+  background: #1f1f1f;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+html.dark .header h1,
+html.dark .header h2,
+html.dark .header h3 {
+  color: #e5e7eb;
+}
+
+/* 通用卡片 */
+html.dark .stat-card,
+html.dark .feature-card,
+html.dark .feature-item,
+html.dark .formula-card,
+html.dark .formula-section,
+html.dark .settings-section,
+html.dark .practice-card,
+html.dark .compare-card,
+html.dark .case-card,
+html.dark .combination-card {
+  background: #1f1f1f;
+  border: 1px solid #333333;
+}
+
+/* 标题和文字 */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark .stat-label,
+html.dark .formula-name,
+html.dark .setting-label,
+html.dark .feature-card h3,
+html.dark .formula-card h3 {
+  color: #e5e7eb;
+}
+
+/* 描述文字 */
+html.dark p,
+html.dark .stat-label,
+html.dark .setting-description,
+html.dark .formula-description,
+html.dark .feature-card p,
+html.dark .feature-item p {
+  color: #a1a1aa;
+}
+
+/* 主页特殊样式 */
+html.dark .home-container {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+}
+
+html.dark .hero-section {
+  color: #e5e7eb;
+}
+
+html.dark .new-features {
+  background: rgba(30, 30, 30, 0.5);
+  border-color: #333333;
+}
+
+html.dark .new-features h2 {
+  color: #e5e7eb;
+}
+
+html.dark .feature-item {
+  background: rgba(30, 30, 30, 0.5);
+  border-color: #333333;
+}
+
+html.dark .feature-item:hover {
+  background: rgba(50, 50, 50, 0.5);
+}
+
+/* 公式样式 */
+html.dark .formula-text {
+  background: #1f2937;
+  color: #60a5fa;
+}
+
+html.dark .formula-box {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+}
+
+html.dark .formula-box code {
+  color: #e5e7eb;
+}
+
+/* 场景框 */
+html.dark .scenario-box {
+  background: #1e3a5f;
+  border-left-color: #3b82f6;
+}
+
+html.dark .scenario-box h4 {
+  color: #93c5fd;
+}
+
+html.dark .scenario-box p {
+  color: #a1a1aa;
+}
+
+/* 分隔线 */
+html.dark .setting-item,
+html.dark .stats-section,
+html.dark .filters h3 {
+  border-bottom-color: #333333;
+}
+
+/* Logo文字 */
+html.dark .logo-text {
+  color: #60a5fa;
+}
+
+/* Footer */
+html.dark .footer {
+  color: #6b7280;
+}
