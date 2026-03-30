@@ -21,6 +21,7 @@
         <h2>公式</h2>
         <div class="formula-box">
           <code>{{ formula.formula }}</code>
+          <button @click="copyFormula" class="copy-btn">📋 复制</button>
         </div>
       </div>
 
@@ -69,6 +70,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useMainStore } from '../store'
+import { useMessage } from 'naive-ui'
 import { NButton, NTabs, NTabPane, NTag } from 'naive-ui'
 import { formulas } from '../utils/data'
 import type { Formula } from '../types'
@@ -77,6 +79,7 @@ import ExampleDisplay from '../components/ExampleDisplay.vue'
 const route = useRoute()
 const router = useRouter()
 const store = useMainStore()
+const message = useMessage()
 
 const formula = ref<Formula>(formulas[0])
 
@@ -99,6 +102,14 @@ function toggleFavorite() {
   } else {
     store.addFavorite(formula.value.id)
   }
+}
+
+function copyFormula() {
+  navigator.clipboard.writeText(formula.value.formula).then(() => {
+    message.success('📋 公式已复制到剪贴板')
+  }).catch(() => {
+    message.error('❌ 复制失败，请重试')
+  })
 }
 
 onMounted(() => {
@@ -163,6 +174,28 @@ onMounted(() => {
   padding: 1.5rem;
   border-radius: 8px;
   overflow-x: auto;
+  position: relative;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
 
 .formula-box code {

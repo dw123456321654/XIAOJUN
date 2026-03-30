@@ -125,6 +125,7 @@ import { useMessage } from 'naive-ui'
 import TableGrid from '../components/TableGrid.vue'
 import { getCaseById } from '../utils/realCases'
 import type { RealCase } from '../types'
+import * as XLSX from 'xlsx'
 
 const route = useRoute()
 const router = useRouter()
@@ -151,9 +152,41 @@ function goBack() {
 }
 
 function downloadTemplate() {
-  // TODO: 实现Excel模板下载
-  message.info(`📥 下载Excel模板：${caseItem.value?.title}`)
-  console.log('Download template:', caseItem.value?.downloadUrl)
+  if (!caseItem.value) return
+
+  try {
+    // 准备Excel数据
+    const headers = caseItem.value.dataTemplate.headers
+    const rows = caseItem.value.dataTemplate.rows
+
+    // 构建Excel数据数组（第一行是表头）
+    const excelData = [headers, ...rows]
+
+    // 创建工作簿
+    const workbook = XLSX.utils.book_new()
+
+    // 创建工作表
+    const worksheet = XLSX.utils.aoa_to_sheet(excelData)
+
+    // 设置列宽（每列宽度15）
+    const colWidths = headers.map(() => ({ wch: 15 }))
+    worksheet['!cols'] = colWidths
+
+    // 添加工作表到工作簿
+    XLSX.utils.book_append_sheet(workbook, worksheet, '数据模板')
+
+    // 生成文件名（移除特殊字符）
+    const safeTitle = caseItem.value.title.replace(/[<>:"/\\|?*]/g, '_')
+    const fileName = `${safeTitle}_模板.xlsx`
+
+    // 下载文件
+    XLSX.writeFile(workbook, fileName)
+
+    message.success(`📥 Excel模板已下载：${fileName}`)
+  } catch (error) {
+    console.error('Download template error:', error)
+    message.error('❌ 下载失败，请重试')
+  }
 }
 
 function copyData() {
