@@ -115,10 +115,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useMessage } from 'naive-ui'
 import { NInput, NButton, NTag } from 'naive-ui'
 import { formulas } from '../utils/data'
 
 const router = useRouter()
+const message = useMessage()
 const inputData = ref('')
 const desiredResult = ref('')
 const analyzing = ref(false)
@@ -249,8 +251,11 @@ function viewFormula(id: string) {
 }
 
 function copyFormula(formula: string) {
-  navigator.clipboard.writeText(formula)
-  // TODO: 显示复制成功提示
+  navigator.clipboard.writeText(formula).then(() => {
+    message.success('📋 公式已复制到剪贴板')
+  }).catch(() => {
+    message.error('❌ 复制失败，请重试')
+  })
 }
 </script>
 
