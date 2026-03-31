@@ -2129,6 +2129,932 @@ export const formulaCombinations: FormulaCombination[] = [
       },
     },
   },
+  // ========== 多条件统计函数 ==========
+  {
+    id: 'sumifs-001',
+    name: 'SUMIFS',
+    formula: '=SUMIFS(sum_range, criteria_range1, criteria1, ...)',
+    description: '多条件求和。对满足多个条件的单元格求和，是SUMIF的升级版。',
+    tags: ['统计'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '苹果' }, { id: 2, value: '北京' }, { id: 3, value: '10' }] },
+          { id: 3, cells: [{ id: 1, value: '苹果' }, { id: 2, value: '上海' }, { id: 3, value: '15' }] },
+          { id: 4, cells: [{ id: 1, value: '香蕉' }, { id: 2, value: '北京' }, { id: 3, value: '5' }] },
+        ],
+        formula: '=SUMIFS(C2:C4, A2:A4, "苹果", B2:B4, "北京")',
+        result: '10',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }, { id: 4, value: 'D' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '销售部' }, { id: 3, value: '2026-01' }, { id: 4, value: '10000' }] },
+          { id: 3, cells: [{ id: 1, value: '张三' }, { id: 2, value: '销售部' }, { id: 3, value: '2026-02' }, { id: 4, value: '12000' }] },
+          { id: 4, cells: [{ id: 1, value: '李四' }, { id: 2, value: '销售部' }, { id: 3, value: '2026-01' }, { id: 4, value: '8000' }] },
+        ],
+        formula: '=SUMIFS(D2:D4, B2:B4, "销售部", C2:C4, ">=2026-01-01")',
+        result: '22000',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }, { id: 3, value: '' }] },
+        ],
+        formula: '=SUMIFS(A2:A3, A2:A3, ">10", A2:A3, "<30")',
+        result: '20',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }, { id: 4, value: 'D' }] },
+          { id: 2, cells: [{ id: 1, value: '一月' }, { id: 2, value: '销售部' }, { id: 3, value: '电子产品' }, { id: 4, value: '50000' }] },
+          { id: 3, cells: [{ id: 1, value: '一月' }, { id: 2, value: '销售部' }, { id: 3, value: '服装' }, { id: 4, value: '30000' }] },
+          { id: 4, cells: [{ id: 1, value: '二月' }, { id: 2, value: '销售部' }, { id: 3, value: '电子产品' }, { id: 4, value: '60000' }] },
+        ],
+        formula: '=SUMIFS(D2:D4, B2:B4, "销售部", C2:C4, "电子产品")',
+        result: '110000',
+      },
+    },
+  },
+  {
+    id: 'countifs-001',
+    name: 'COUNTIFS',
+    formula: '=COUNTIFS(criteria_range1, criteria1, ...)',
+    description: '多条件计数。统计满足多个条件的单元格数量，是COUNTIF的升级版。',
+    tags: ['统计'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '销售部' }, { id: 3, value: '85' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '销售部' }, { id: 3, value: '92' }] },
+          { id: 4, cells: [{ id: 1, value: '王五' }, { id: 2, value: '技术部' }, { id: 3, value: '78' }] },
+        ],
+        formula: '=COUNTIFS(B2:B4, "销售部", C2:C4, ">=90")',
+        result: '1',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }, { id: 4, value: 'D' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '销售部' }, { id: 3, value: '2026-01' }, { id: 4, value: '达标' }] },
+          { id: 3, cells: [{ id: 1, value: '张三' }, { id: 2, value: '销售部' }, { id: 3, value: '2026-02' }, { id: 4, value: '达标' }] },
+          { id: 4, cells: [{ id: 1, value: '李四' }, { id: 2, value: '销售部' }, { id: 3, value: '2026-01' }, { id: 4, value: '未达标' }] },
+        ],
+        formula: '=COUNTIFS(B2:B4, "销售部", D2:D4, "达标")',
+        result: '2',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }, { id: 3, value: 'A' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '40' }, { id: 3, value: 'B' }] },
+          { id: 4, cells: [{ id: 1, value: '50' }, { id: 2, value: '60' }, { id: 3, value: 'A' }] },
+        ],
+        formula: '=COUNTIFS(A2:A4, ">20", A2:A4, "<60", C2:C4, "A")',
+        result: '2',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '销售部' }, { id: 3, value: '85' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '销售部' }, { id: 3, value: '92' }] },
+          { id: 4, cells: [{ id: 1, value: '王五' }, { id: 2, value: '技术部' }, { id: 3, value: '90' }] },
+          { id: 5, cells: [{ id: 1, value: '赵六' }, { id: 2, value: '销售部' }, { id: 3, value: '88' }] },
+        ],
+        formula: '=COUNTIFS(B2:B5, "销售部", C2:C5, ">=90")',
+        result: '1',
+      },
+    },
+  },
+  // ========== 高级查找函数 ==========
+  {
+    id: 'xlookup-001',
+    name: 'XLOOKUP',
+    formula: '=XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])',
+    description: '新版查找函数。比VLOOKUP更强大、更简单，可以从任意方向查找，不需要列序号。',
+    tags: ['查找与引用'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '苹果' }, { id: 2, value: '5' }] },
+          { id: 3, cells: [{ id: 1, value: '香蕉' }, { id: 2, value: '3' }] },
+        ],
+        formula: '=XLOOKUP("苹果", A2:A3, B2:B3)',
+        result: '5',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '销售部' }, { id: 3, value: '8000' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '技术部' }, { id: 3, value: '10000' }] },
+        ],
+        formula: '=XLOOKUP("李四", A2:A3, C2:C3)',
+        result: '10000',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '产品A' }, { id: 2, value: '100' }, { id: 3, value: '10' }] },
+          { id: 3, cells: [{ id: 1, value: '产品B' }, { id: 2, value: '200' }, { id: 3, value: '20' }] },
+        ],
+        formula: '=XLOOKUP(MAX(B2:B3), B2:B3, C2:C3)',
+        result: '20',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'P001' }, { id: 2, value: '100' }] },
+          { id: 3, cells: [{ id: 1, value: 'P002' }, { id: 2, value: '150' }] },
+        ],
+        formula: '=XLOOKUP("P001", A2:A3, B2:B3, "未找到")',
+        result: '100',
+      },
+    },
+  },
+  {
+    id: 'offset-001',
+    name: 'OFFSET',
+    formula: '=OFFSET(reference, rows, cols, [height], [width])',
+    description: '偏移。从指定单元格偏移指定行列数，返回新区域的值。常用于动态区域引用。',
+    tags: ['查找与引用'],
+    difficulty: 'advanced',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }, { id: 3, value: '30' }] },
+          { id: 3, cells: [{ id: 1, value: '40' }, { id: 2, value: '50' }, { id: 3, value: '60' }] },
+        ],
+        formula: '=OFFSET(A2, 1, 1)',
+        result: '50',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '一月' }, { id: 2, value: '50000' }, { id: 3, value: '销售' }] },
+          { id: 3, cells: [{ id: 1, value: '二月' }, { id: 2, value: '60000' }, { id: 3, value: '销售' }] },
+          { id: 4, cells: [{ id: 1, value: '三月' }, { id: 2, value: '70000' }, { id: 3, value: '销售' }] },
+        ],
+        formula: '=SUM(OFFSET(B2, 0, 0, 3, 1))',
+        result: '180000',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }, { id: 3, value: '30' }] },
+          { id: 3, cells: [{ id: 1, value: '40' }, { id: 2, value: '50' }, { id: 3, value: '60' }] },
+        ],
+        formula: '=AVERAGE(OFFSET(A2, 0, 0, 2, 3))',
+        result: '35',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: 'Q1' }, { id: 2, value: '1000' }, { id: 3, value: '200' }] },
+          { id: 3, cells: [{ id: 1, value: 'Q2' }, { id: 2, value: '1200' }, { id: 3, value: '250' }] },
+          { id: 4, cells: [{ id: 1, value: 'Q3' }, { id: 2, value: '1100' }, { id: 3, value: '220' }] },
+          { id: 5, cells: [{ id: 1, value: 'Q4' }, { id: 2, value: '1300' }, { id: 3, value: '280' }] },
+        ],
+        formula: '=SUM(OFFSET(B2, 0, 0, 4, 1))',
+        result: '4600',
+      },
+    },
+  },
+  // ========== 高级数学函数 ==========
+  {
+    id: 'sumproduct-001',
+    name: 'SUMPRODUCT',
+    formula: '=SUMPRODUCT(array1, array2, ...)',
+    description: '乘积求和。计算多个数组对应元素的乘积之和。常用于加权平均、复杂求和。',
+    tags: ['数学与三角'],
+    difficulty: 'advanced',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '2' }] },
+          { id: 3, cells: [{ id: 1, value: '20' }, { id: 2, value: '3' }] },
+          { id: 4, cells: [{ id: 1, value: '30' }, { id: 2, value: '4' }] },
+        ],
+        formula: '=SUMPRODUCT(A2:A4, B2:B4)',
+        result: '200',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '产品A' }, { id: 2, value: '100' }, { id: 3, value: '0.3' }] },
+          { id: 3, cells: [{ id: 1, value: '产品B' }, { id: 2, value: '200' }, { id: 3, value: '0.5' }] },
+          { id: 4, cells: [{ id: 1, value: '产品C' }, { id: 2, value: '150' }, { id: 3, value: '0.2' }] },
+        ],
+        formula: '=SUMPRODUCT(B2:B4, C2:C4)/SUM(B2:B4)',
+        result: '130',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }, { id: 3, value: 'A' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '40' }, { id: 3, value: 'B' }] },
+        ],
+        formula: '=SUMPRODUCT(A2:A4, B2:B4, (C2:C4="A"))',
+        result: '1200',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '产品A' }, { id: 2, value: '100' }, { id: 3, value: '0.5' }] },
+          { id: 3, cells: [{ id: 1, value: '产品B' }, { id: 2, value: '200' }, { id: 3, value: '0.3' }] },
+          { id: 4, cells: [{ id: 1, value: '产品C' }, { id: 2, value: '150' }, { id: 3, value: '0.2' }] },
+        ],
+        formula: '=SUMPRODUCT(B2:B4, C2:C4)',
+        result: '130',
+      },
+    },
+  },
+  // ========== 更多文本函数 ==========
+  {
+    id: 'text-001',
+    name: 'TEXT',
+    formula: '=TEXT(value, format_text)',
+    description: '文本格式化。将数值转换为指定格式的文本。常用于日期格式化、数字格式化。',
+    tags: ['文本处理'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=TEXT(A2, "yyyy年mm月dd日")',
+        result: '2026年03月28日',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '1234.5678' }, { id: 2, value: '' }] },
+        ],
+        formula: '=TEXT(A2, "#,##0.00")',
+        result: '1,234.57',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=TEXT(A2, "yyyy-mm-dd")&" "&TEXT(A2, "dddd")',
+        result: '2026-03-28 星期日',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '50000' }, { id: 2, value: '' }] },
+        ],
+        formula: '=TEXT(A2, "￥#,##0")',
+        result: '￥50,000',
+      },
+    },
+  },
+  {
+    id: 'find-001',
+    name: 'FIND',
+    formula: '=FIND(find_text, within_text, [start_num])',
+    description: '查找文本。返回指定文本在另一个文本中的位置，区分大小写。',
+    tags: ['文本处理'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel函数助手' }, { id: 2, value: '' }] },
+        ],
+        formula: '=FIND("函数", A2)',
+        result: '6',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'data.xlsx' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LEFT(A2, FIND(".", A2)-1)',
+        result: 'data',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel函数助手' }, { id: 2, value: '' }] },
+        ],
+        formula: '=MID(A2, FIND("函数", A2), 2)',
+        result: '函数',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '张三(销售部)' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LEFT(A2, FIND("(", A2)-1)',
+        result: '张三',
+      },
+    },
+  },
+  {
+    id: 'replace-001',
+    name: 'REPLACE',
+    formula: '=REPLACE(old_text, start_num, num_chars, new_text)',
+    description: '替换文本。从指定位置开始替换指定数量的字符。',
+    tags: ['文本处理'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel函数' }, { id: 2, value: '' }] },
+        ],
+        formula: '=REPLACE(A2, 6, 2, "公式")',
+        result: 'Excel公式',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '123-4567' }, { id: 2, value: '' }] },
+        ],
+        formula: '=REPLACE(A2, 4, 1, "*")',
+        result: '123*567',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel函数' }, { id: 2, value: '' }] },
+        ],
+        formula: '=REPLACE(A2, FIND("函", A2), 2, "公")',
+        result: 'Excel公式',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '张三丰' }, { id: 2, value: '' }] },
+        ],
+        formula: '=REPLACE(A2, 3, 1, "峰")',
+        result: '张三峰',
+      },
+    },
+  },
+  // ========== 高级统计函数 ==========
+  {
+    id: 'rank-001',
+    name: 'RANK',
+    formula: '=RANK(number, ref, [order])',
+    description: '排名。返回数字在数字列表中的排名。常用于销售额排名、成绩排名。',
+    tags: ['统计'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '85' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '92' }, { id: 2, value: '' }] },
+          { id: 4, cells: [{ id: 1, value: '78' }, { id: 2, value: '' }] },
+        ],
+        formula: '=RANK(A2, A2:A4, 0)',
+        result: '2',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '10000' }, { id: 3, value: '销售部' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '12000' }, { id: 3, value: '销售部' }] },
+          { id: 4, cells: [{ id: 1, value: '王五' }, { id: 2, value: '8000' }, { id: 3, value: '销售部' }] },
+        ],
+        formula: '=RANK(B2, B2:B4, 0)',
+        result: '2',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '85' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '92' }, { id: 2, value: '' }] },
+          { id: 4, cells: [{ id: 1, value: '78' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(RANK(A2, A2:A4, 0)<=3, "前三名", "其他")',
+        result: '其他',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '产品A' }, { id: 2, value: '500' }, { id: 3, value: '100' }] },
+          { id: 3, cells: [{ id: 1, value: '产品B' }, { id: 2, value: '800' }, { id: 3, value: '200' }] },
+          { id: 4, cells: [{ id: 1, value: '产品C' }, { id: 2, value: '600' }, { id: 3, value: '150' }] },
+        ],
+        formula: '=RANK(C2, C2:C4, 0)',
+        result: '2',
+      },
+    },
+  },
+  {
+    id: 'median-001',
+    name: 'MEDIAN',
+    formula: '=MEDIAN(number1, number2, ...)',
+    description: '中位数。返回一组数值的中位数，不受极端值影响。',
+    tags: ['统计'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+          { id: 4, cells: [{ id: 1, value: '1000' }, { id: 2, value: '' }] },
+        ],
+        formula: '=MEDIAN(A2:A4)',
+        result: '25',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '85' }, { id: 3, value: '销售部' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '92' }, { id: 3, value: '销售部' }] },
+          { id: 4, cells: [{ id: 1, value: '王五' }, { id: 2, value: '78' }, { id: 3, value: '技术部' }] },
+        ],
+        formula: '=MEDIAN(B2:B4)',
+        result: '88.5',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=AVERAGE(A2:A3)-MEDIAN(A2:A3)',
+        result: '0',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '500' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '600' }, { id: 2, value: '' }] },
+          { id: 4, cells: [{ id: 1, value: '700' }, { id: 2, value: '' }] },
+          { id: 5, cells: [{ id: 1, value: '10000' }, { id: 2, value: '' }] },
+        ],
+        formula: '=MEDIAN(A2:A5)',
+        result: '600',
+      },
+    },
+  },
+  {
+    id: 'large-001',
+    name: 'LARGE',
+    formula: '=LARGE(array, k)',
+    description: '第K大值。返回数据集中第K大的值。',
+    tags: ['统计'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '20' }, { id: 2, value: '' }] },
+          { id: 4, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+          { id: 5, cells: [{ id: 1, value: '40' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LARGE(A2:A5, 2)',
+        result: '30',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '10000' }, { id: 3, value: '销售部' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '12000' }, { id: 3, value: '销售部' }] },
+          { id: 4, cells: [{ id: 1, value: '王五' }, { id: 2, value: '8000' }, { id: 3, value: '技术部' }] },
+        ],
+        formula: '=LARGE(B2:B4, 2)',
+        result: '10000',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SUM(A2:A3)-LARGE(A2:A3, 1)-SMALL(A2:A3, 1)',
+        result: '20',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '500' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '600' }, { id: 2, value: '' }] },
+          { id: 4, cells: [{ id: 1, value: '700' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LARGE(A2:A4, 1)',
+        result: '700',
+      },
+    },
+  },
+  {
+    id: 'small-001',
+    name: 'SMALL',
+    formula: '=SMALL(array, k)',
+    description: '第K小值。返回数据集中第K小的值。',
+    tags: ['统计'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '20' }, { id: 2, value: '' }] },
+          { id: 4, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+          { id: 5, cells: [{ id: 1, value: '40' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SMALL(A2:A5, 2)',
+        result: '20',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '10000' }, { id: 3, value: '销售部' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '12000' }, { id: 3, value: '销售部' }] },
+          { id: 4, cells: [{ id: 1, value: '王五' }, { id: 2, value: '8000' }, { id: 3, value: '技术部' }] },
+        ],
+        formula: '=SMALL(B2:B4, 2)',
+        result: '8000',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LARGE(A2:A3, 1)-SMALL(A2:A3, 1)',
+        result: '20',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '500' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '600' }, { id: 2, value: '' }] },
+          { id: 4, cells: [{ id: 1, value: '700' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SMALL(A2:A4, 1)',
+        result: '500',
+      },
+    },
+  },
+  // ========== 更多日期函数 ==========
+  {
+    id: 'now-001',
+    name: 'NOW',
+    formula: '=NOW()',
+    description: '当前日期和时间。返回当前系统日期和时间。',
+    tags: ['日期时间'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '当前时间' }, { id: 2, value: '=NOW()' }] },
+        ],
+        formula: '=NOW()',
+        result: '2026-03-28 22:30:00',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '当前时间' }, { id: 2, value: '=TEXT(NOW(), "yyyy-mm-dd hh:mm")' }] },
+        ],
+        formula: '=TEXT(NOW(), "yyyy年mm月dd日 hh:mm")',
+        result: '2026年03月28日 22:30',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '当前时间' }, { id: 2, value: '=YEAR(NOW())' }] },
+        ],
+        formula: '=YEAR(NOW())',
+        result: '2026',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '当前时间' }, { id: 2, value: '=NOW()' }] },
+        ],
+        formula: '=NOW()',
+        result: '2026-03-28 22:30:00',
+      },
+    },
+  },
+  {
+    id: 'datedif-001',
+    name: 'DATEDIF',
+    formula: '=DATEDIF(start_date, end_date, unit)',
+    description: '日期差。计算两个日期之间的间隔，可以按年、月、天计算。',
+    tags: ['日期时间'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-01-01' }, { id: 2, value: '2026-03-28' }, { id: 3, value: '' }] },
+        ],
+        formula: '=DATEDIF(A2, B2, "D")',
+        result: '86',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }, { id: 4, value: 'D' }] },
+          { id: 2, cells: [{ id: 1, value: '入职日期' }, { id: 2, value: '离职日期' }, { id: 3, value: '年数' }, { id: 4, value: '月数' }] },
+          { id: 3, cells: [{ id: 1, value: '2020-01-01' }, { id: 2, value: '2026-03-28' }, { id: 3, value: '' }, { id: 4, value: '' }] },
+        ],
+        formula: '=DATEDIF(A3, B3, "Y")',
+        result: '6',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '开始日期' }, { id: 2, value: '结束日期' }, { id: 3, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '2026-01-01' }, { id: 2, value: '2026-03-28' }, { id: 3, value: '' }] },
+        ],
+        formula: '=DATEDIF(A3, B3, "YM")&"个月"',
+        result: '2个月',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '入职日期' }, { id: 2, value: '当前日期' }, { id: 3, value: '工作天数' }] },
+          { id: 3, cells: [{ id: 1, value: '2020-01-01' }, { id: 2, value: '=TODAY()' }, { id: 3, value: '' }] },
+        ],
+        formula: '=DATEDIF(A3, B3, "D")',
+        result: '2257',
+      },
+    },
+  },
+  // ========== 信息判断函数 ==========
+  {
+    id: 'isblank-001',
+    name: 'ISBLANK',
+    formula: '=ISBLANK(value)',
+    description: '判断是否为空。检查单元格是否为空值，常用于数据验证、条件判断。',
+    tags: ['信息'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '文本' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ISBLANK(A2)',
+        result: 'TRUE',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '' }, { id: 3, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '85' }, { id: 3, value: '' }] },
+        ],
+        formula: '=IF(ISBLANK(C2), "未评分", C2)',
+        result: '未评分',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '' }, { id: 2, value: '' }] },
+        ],
+        formula: '=COUNTIF(A2:A3, "<>"")*ISBLANK(A2)',
+        result: '0',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(ISBLANK(A2), "未填写", A2)',
+        result: '未填写',
+      },
+    },
+  },
+  {
+    id: 'isnumber-001',
+    name: 'ISNUMBER',
+    formula: '=ISNUMBER(value)',
+    description: '判断是否为数字。检查值是否为数字，常用于数据类型验证。',
+    tags: ['信息'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '123' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '文本' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ISNUMBER(A2)',
+        result: 'TRUE',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '100' }, { id: 2, value: '200' }, { id: 3, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '文本' }, { id: 2, value: '300' }, { id: 3, value: '' }] },
+        ],
+        formula: '=SUMIF(A2:A3, ">=100")',
+        result: '300',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '123' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(ISNUMBER(A2), A2*2, "不是数字")',
+        result: '246',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10000' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(ISNUMBER(A2), "有效数据", "无效数据")',
+        result: '有效数据',
+      },
+    },
+  },
+  {
+    id: 'istext-001',
+    name: 'ISTEXT',
+    formula: '=ISTEXT(value)',
+    description: '判断是否为文本。检查值是否为文本，常用于数据类型验证。',
+    tags: ['信息'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '文本' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '123' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ISTEXT(A2)',
+        result: 'TRUE',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '100' }, { id: 3, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '文本' }, { id: 3, value: '' }] },
+        ],
+        formula: '=COUNTIF(A2:A3, ISTEXT(A2:A3))',
+        result: '1',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '文本' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(ISTEXT(A2), LEFT(A2, 1), "不是文本")',
+        result: '文',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(ISTEXT(A2), "文本数据", "数值数据")',
+        result: '文本数据',
+      },
+    },
+  },
+  // ========== 更多文本函数 ==========
+  {
+    id: 'substitute-001',
+    name: 'SUBSTITUTE',
+    formula: '=SUBSTITUTE(text, old_text, new_text, [instance_num])',
+    description: '替换文本。用新文本替换指定文本的旧文本。可以替换全部或指定次数。',
+    tags: ['文本处理'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel函数助手' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SUBSTITUTE(A2, "函数", "公式")',
+        result: 'Excel公式助手',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel函数函数函数' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SUBSTITUTE(A2, "函数", "公式")',
+        result: 'Excel公式公式公式',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel函数函数' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SUBSTITUTE(A2, "函数", "公式", 1)',
+        result: 'Excel公式函数',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SUBSTITUTE(A2, "-", "/")',
+        result: '2026/03/28',
+      },
+    },
+  },
+  // ========== 更多日期函数 ==========
+  {
+    id: 'date-001',
+    name: 'DATE',
+    formula: '=DATE(year, month, day)',
+    description: '创建日期。根据年、月、日参数返回日期序列号。',
+    tags: ['日期时间'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '2026' }, { id: 2, value: '3' }, { id: 3, value: '28' }] },
+        ],
+        formula: '=DATE(A2, B2, C2)',
+        result: '2026-03-28',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '2026' }, { id: 2, value: '1' }, { id: 3, value: '1' }] },
+          { id: 3, cells: [{ id: 1, value: '2026' }, { id: 2, value: '12' }, { id: 3, value: '31' }] },
+        ],
+        formula: '=DATE(A2, B2, C2)',
+        result: '2026-01-01',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026' }, { id: 2, value: '3' }] },
+        ],
+        formula: '=DATE(A2, B2, DAY(TODAY()))',
+        result: '2026-03-28',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '2026' }, { id: 2, value: '3' }, { id: 3, value: '1' }] },
+        ],
+        formula: '=DATE(A2, B2+1, 1)',
+        result: '2026-04-01',
+      },
+    },
+  },
+  {
+    id: 'networkdays-001',
+    name: 'NETWORKDAYS',
+    formula: '=NETWORKDAYS(start_date, end_date, [holidays])',
+    description: '工作日计算。计算两个日期之间的工作日数量（排除周末和节假日）。',
+    tags: ['日期时间'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-01' }, { id: 2, value: '2026-03-31' }, { id: 3, value: '' }] },
+        ],
+        formula: '=NETWORKDAYS(A2, B2)',
+        result: '23',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-01' }, { id: 2, value: '2026-03-31' }, { id: 3, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '2026-03-05' }, { id: 2, value: '2026-03-05' }, { id: 3, value: '节假日' }] },
+        ],
+        formula: '=NETWORKDAYS(A2, B2, C3)',
+        result: '22',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-01' }, { id: 2, value: '2026-03-31' }, { id: 3, value: '' }] },
+        ],
+        formula: '=NETWORKDAYS(A2, B2)-DAYS(A2, B2)',
+        result: '8',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-01-01' }, { id: 2, value: '2026-01-31' }, { id: 3, value: '工作天数' }] },
+        ],
+        formula: '=NETWORKDAYS(A2, B2)',
+        result: '22',
+      },
+    },
+  },
 ]
 
 // 标签列表
