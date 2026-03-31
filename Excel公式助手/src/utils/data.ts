@@ -2,8 +2,293 @@ import type { Formula, Practice, LearningPath, RealCase, FormulaCombination } fr
 
 // 公式数据
 export const formulas: Formula[] = [
+  // ========== 数学与三角函数 ==========
   {
-    id: '1',
+    id: 'sum-001',
+    name: 'SUM',
+    formula: '=SUM(number1, number2, ...)',
+    description: '求和。对一组数值进行加法运算，是Excel中最基础的数学函数。',
+    tags: ['数学与三角'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SUM(A2:A3)',
+        result: '30',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '100' }, { id: 2, value: '200' }, { id: 3, value: '300' }] },
+          { id: 3, cells: [{ id: 1, value: '150' }, { id: 2, value: '250' }, { id: 3, value: '' }] },
+        ],
+        formula: '=SUM(A2:C3)',
+        result: '1000',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SUM(A2:A3)*2',
+        result: '60',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '一月' }, { id: 2, value: '50000' }, { id: 3, value: '销售' }] },
+          { id: 3, cells: [{ id: 1, value: '二月' }, { id: 2, value: '60000' }, { id: 3, value: '销售' }] },
+          { id: 4, cells: [{ id: 1, value: '三月' }, { id: 2, value: '70000' }, { id: 3, value: '销售' }] },
+        ],
+        formula: '=SUMIF(C2:C4, "销售", B2:B4)',
+        result: '180000',
+      },
+    },
+  },
+  {
+    id: 'avg-001',
+    name: 'AVERAGE',
+    formula: '=AVERAGE(number1, number2, ...)',
+    description: '平均值。计算一组数值的算术平均值，常用于计算平均成绩、平均销售额等。',
+    tags: ['统计'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '80' }, { id: 2, value: '90' }] },
+          { id: 3, cells: [{ id: 1, value: '85' }, { id: 2, value: '' }] },
+        ],
+        formula: '=AVERAGE(A2:A3)',
+        result: '85',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '85' }, { id: 3, value: '销售部' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '92' }, { id: 3, value: '销售部' }] },
+          { id: 4, cells: [{ id: 1, value: '王五' }, { id: 2, value: '78' }, { id: 3, value: '技术部' }] },
+        ],
+        formula: '=AVERAGE(B2:B4)',
+        result: '85',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '80' }, { id: 2, value: '90' }] },
+          { id: 3, cells: [{ id: 1, value: '85' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ROUND(AVERAGE(A2:A3), 0)',
+        result: '85',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '一月' }, { id: 2, value: '50000' }, { id: 3, value: '销售' }] },
+          { id: 3, cells: [{ id: 1, value: '二月' }, { id: 2, value: '60000' }, { id: 3, value: '销售' }] },
+          { id: 4, cells: [{ id: 1, value: '三月' }, { id: 2, value: '70000' }, { id: 3, value: '销售' }] },
+        ],
+        formula: '=AVERAGE(B2:B4)',
+        result: '60000',
+      },
+    },
+  },
+  {
+    id: 'cnt-001',
+    name: 'COUNT',
+    formula: '=COUNT(value1, value2, ...)',
+    description: '计数。统计包含数字的单元格数量，常用于统计有效数据个数。',
+    tags: ['统计'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+          { id: 4, cells: [{ id: 1, value: '文本' }, { id: 2, value: '' }] },
+        ],
+        formula: '=COUNT(A2:A4)',
+        result: '2',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '85' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '92' }] },
+          { id: 4, cells: [{ id: 1, value: '王五' }, { id: 2, value: '' }] },
+        ],
+        formula: '=COUNT(B2:B4)',
+        result: '2',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SUM(A2:A3)/COUNT(A2:A3)',
+        result: '15',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '100' }, { id: 2, value: '已完成' }] },
+          { id: 3, cells: [{ id: 1, value: '150' }, { id: 2, value: '进行中' }] },
+          { id: 4, cells: [{ id: 1, value: '' }, { id: 2, value: '未开始' }] },
+        ],
+        formula: '=COUNT(A2:A4)',
+        result: '2',
+      },
+    },
+  },
+  {
+    id: 'max-001',
+    name: 'MAX',
+    formula: '=MAX(number1, number2, ...)',
+    description: '最大值。返回一组数值中的最大值，常用于找出最高分、最高销售额等。',
+    tags: ['统计'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=MAX(A2:A3)',
+        result: '30',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '85' }, { id: 3, value: '销售部' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '92' }, { id: 3, value: '销售部' }] },
+          { id: 4, cells: [{ id: 1, value: '王五' }, { id: 2, value: '78' }, { id: 3, value: '技术部' }] },
+        ],
+        formula: '=MAX(B2:B4)',
+        result: '92',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=MAX(A2:A3)-MIN(A2:A3)',
+        result: '20',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '产品A' }, { id: 2, value: '500' }, { id: 3, value: '100' }] },
+          { id: 3, cells: [{ id: 1, value: '产品B' }, { id: 2, value: '800' }, { id: 3, value: '200' }] },
+          { id: 4, cells: [{ id: 1, value: '产品C' }, { id: 2, value: '600' }, { id: 3, value: '150' }] },
+        ],
+        formula: '=MAX(B2:B4)',
+        result: '800',
+      },
+    },
+  },
+  {
+    id: 'min-001',
+    name: 'MIN',
+    formula: '=MIN(number1, number2, ...)',
+    description: '最小值。返回一组数值中的最小值，常用于找出最低分、最低成本等。',
+    tags: ['统计'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=MIN(A2:A3)',
+        result: '10',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '85' }, { id: 3, value: '销售部' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '92' }, { id: 3, value: '销售部' }] },
+          { id: 4, cells: [{ id: 1, value: '王五' }, { id: 2, value: '78' }, { id: 3, value: '技术部' }] },
+        ],
+        formula: '=MIN(B2:B4)',
+        result: '78',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(MIN(A2:A3)<15, "偏低", "正常")',
+        result: '正常',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '产品A' }, { id: 2, value: '500' }, { id: 3, value: '100' }] },
+          { id: 3, cells: [{ id: 1, value: '产品B' }, { id: 2, value: '800' }, { id: 3, value: '200' }] },
+          { id: 4, cells: [{ id: 1, value: '产品C' }, { id: 2, value: '600' }, { id: 3, value: '150' }] },
+        ],
+        formula: '=MIN(C2:C4)',
+        result: '100',
+      },
+    },
+  },
+  {
+    id: 'rnd-001',
+    name: 'ROUND',
+    formula: '=ROUND(number, num_digits)',
+    description: '四舍五入。按指定的小数位数对数值进行四舍五入。',
+    tags: ['数学与三角'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '3.14159' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ROUND(A2, 2)',
+        result: '3.14',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '100.456' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '200.789' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ROUND(SUM(A2:A3), 1)',
+        result: '301.2',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '3.14159' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ROUND(A2, 0)',
+        result: '3',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '1234.5678' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ROUND(A2, 2)',
+        result: '1234.57',
+      },
+    },
+  },
+  // ========== 查找与引用函数 ==========
+  {
+    id: 'vlookup-001',
     name: 'VLOOKUP',
     formula: '=VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])',
     description:
@@ -1462,6 +1747,387 @@ export const formulaCombinations: FormulaCombination[] = [
     },
     useCase: '需要同时满足多个条件时才返回某个结果',
     advantage: 'AND函数确保所有条件都满足，逻辑更严谨',
+  },
+  // ========== 更多文本处理函数 ==========
+  {
+    id: 'left-001',
+    name: 'LEFT',
+    formula: '=LEFT(text, num_chars)',
+    description: '从文本左侧开始提取指定数量的字符。常用于提取姓氏、区域代码等。',
+    tags: ['文本处理'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel函数助手' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LEFT(A2, 5)',
+        result: 'Excel',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '张三丰' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LEFT(A2, 1)',
+        result: '张',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LEFT(A2, 2)&LEFT(A2, 1)',
+        result: 'ExE',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'H-12345' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LEFT(A2, 1)',
+        result: 'H',
+      },
+    },
+  },
+  {
+    id: 'right-001',
+    name: 'RIGHT',
+    formula: '=RIGHT(text, num_chars)',
+    description: '从文本右侧开始提取指定数量的字符。常用于提取后缀、扩展名等。',
+    tags: ['文本处理'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel函数助手' }, { id: 2, value: '' }] },
+        ],
+        formula: '=RIGHT(A2, 2)',
+        result: '手',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '张三丰' }, { id: 2, value: '' }] },
+        ],
+        formula: '=RIGHT(A2, 1)',
+        result: '丰',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'data.xlsx' }, { id: 2, value: '' }] },
+        ],
+        formula: '=RIGHT(A2, LEN(A2)-FIND(".", A2))',
+        result: 'xlsx',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'P-12345' }, { id: 2, value: '' }] },
+        ],
+        formula: '=RIGHT(A2, 5)',
+        result: '12345',
+      },
+    },
+  },
+  {
+    id: 'len-001',
+    name: 'LEN',
+    formula: '=LEN(text)',
+    description: '返回文本字符串的字符数。常用于验证数据长度、限制输入长度等。',
+    tags: ['文本处理'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LEN(A2)',
+        result: '5',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LEN(A2)',
+        result: '2',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(LEN(A2)>5, "太长", "正常")',
+        result: '正常',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '420105199005011234' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LEN(A2)',
+        result: '18',
+      },
+    },
+  },
+  // ========== 更多逻辑函数 ==========
+  {
+    id: 'and-001',
+    name: 'AND',
+    formula: '=AND(logical1, logical2, ...)',
+    description: '与运算。当所有条件都为TRUE时返回TRUE，否则返回FALSE。常用于多条件判断。',
+    tags: ['逻辑'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '85' }, { id: 2, value: '90' }] },
+        ],
+        formula: '=AND(A2>=60, B2>=60)',
+        result: 'TRUE',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '85' }, { id: 2, value: '90' }, { id: 3, value: '' }] },
+        ],
+        formula: '=IF(AND(A2>=60, B2>=60), "合格", "不合格")',
+        result: '合格',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '85' }, { id: 2, value: '90' }, { id: 3, value: '95' }] },
+        ],
+        formula: '=AND(AND(A2>=60, B2>=60), C2>=60)',
+        result: 'TRUE',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '销售部' }, { id: 2, value: '8000' }, { id: 3, value: '10' }] },
+        ],
+        formula: '=IF(AND(B2>5000, C2>5), "达标", "未达标")',
+        result: '达标',
+      },
+    },
+  },
+  {
+    id: 'or-001',
+    name: 'OR',
+    formula: '=OR(logical1, logical2, ...)',
+    description: '或运算。当任意一个条件为TRUE时返回TRUE。常用于多条件任一满足的情况。',
+    tags: ['逻辑'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '85' }, { id: 2, value: '55' }] },
+        ],
+        formula: '=OR(A2>=60, B2>=60)',
+        result: 'TRUE',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '85' }, { id: 2, value: '55' }, { id: 3, value: '' }] },
+        ],
+        formula: '=IF(OR(A2>=90, B2>=90), "优秀", "良好")',
+        result: '良好',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '85' }, { id: 2, value: '55' }, { id: 3, value: '95' }] },
+        ],
+        formula: '=OR(OR(A2>=60, B2>=60), C2>=60)',
+        result: 'TRUE',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '销售部' }, { id: 2, value: '技术部' }, { id: 3, value: '' }] },
+        ],
+        formula: '=IF(OR(A2="销售部", B2="技术部"), "核心部门", "其他部门")',
+        result: '核心部门',
+      },
+    },
+  },
+  {
+    id: 'iferror-001',
+    name: 'IFERROR',
+    formula: '=IFERROR(value, value_if_error)',
+    description: '错误处理。如果第一个参数返回错误，则返回第二个参数。常用于容错处理。',
+    tags: ['逻辑'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '5' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IFERROR(10/A2, "错误")',
+        result: '2',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '100' }, { id: 2, value: '50' }, { id: 3, value: '' }] },
+        ],
+        formula: '=IFERROR(A2/B2, 0)',
+        result: '2',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '100' }, { id: 2, value: '50' }, { id: 3, value: '' }] },
+        ],
+        formula: '=IFERROR(A2/B2, IFERROR(A2*C2, "计算错误"))',
+        result: '2',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '001' }, { id: 2, value: '张三' }, { id: 3, value: '' }] },
+        ],
+        formula: '=IFERROR(VLOOKUP(A2, 数据表, 2, FALSE), "未找到")',
+        result: '未找到',
+      },
+    },
+  },
+  // ========== 更多日期时间函数 ==========
+  {
+    id: 'year-001',
+    name: 'YEAR',
+    formula: '=YEAR(serial_number)',
+    description: '年份。从日期中提取年份部分。',
+    tags: ['日期时间'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=YEAR(A2)',
+        result: '2026',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=YEAR(A2)&"年"',
+        result: '2026年',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(YEAR(A2)=2026, "本年度", "非本年度")',
+        result: '本年度',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=YEAR(A2)',
+        result: '2026',
+      },
+    },
+  },
+  {
+    id: 'month-001',
+    name: 'MONTH',
+    formula: '=MONTH(serial_number)',
+    description: '月份。从日期中提取月份部分（1-12）。',
+    tags: ['日期时间'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=MONTH(A2)',
+        result: '3',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=MONTH(A2)&"月"',
+        result: '3月',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(MONTH(A2)>=3, "Q1", "其他季度")',
+        result: 'Q1',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=MONTH(A2)',
+        result: '3',
+      },
+    },
+  },
+  {
+    id: 'day-001',
+    name: 'DAY',
+    formula: '=DAY(serial_number)',
+    description: '日期。从日期中提取日期部分（1-31）。',
+    tags: ['日期时间'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=DAY(A2)',
+        result: '28',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=DAY(A2)&"日"',
+        result: '28日',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(DAY(A2)<=15, "上半月", "下半月")',
+        result: '下半月',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2026-03-28' }, { id: 2, value: '' }] },
+        ],
+        formula: '=DAY(A2)',
+        result: '28',
+      },
+    },
   },
 ]
 
