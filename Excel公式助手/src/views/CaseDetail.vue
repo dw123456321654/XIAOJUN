@@ -127,7 +127,7 @@ import { getCaseById } from '../utils/realCases'
 import type { RealCase } from '../types'
 import * as XLSX from 'xlsx'
 import { save } from '@tauri-apps/plugin-dialog'
-import { writeBinaryFile, BaseDirectory } from '@tauri-apps/plugin-fs'
+import { writeFile } from '@tauri-apps/plugin-fs'
 
 const route = useRoute()
 const router = useRouter()
@@ -195,7 +195,7 @@ async function downloadTemplate() {
       const binaryData = new Uint8Array(excelBuffer)
 
       // 写入文件
-      await writeBinaryFile(filePath, binaryData)
+      await writeFile(filePath, binaryData)
 
       message.success(`📥 Excel模板已保存：${filePath}`)
     } else {

@@ -3055,8 +3055,6 @@ export const formulaCombinations: FormulaCombination[] = [
       },
     },
   },
-]
-
   // ========== 更多数学与三角函数 ==========
   {
     id: 'abs-001',
