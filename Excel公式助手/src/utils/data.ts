@@ -1,7 +1,7 @@
 import type { Formula, Practice, LearningPath, RealCase, FormulaCombination } from '../types'
 
-// 公式数据
-export const formulas: Formula[] = [
+// 公式数据（原始，包含部分错误格式）
+const _originalFormulas: Formula[] = [
   // ========== 数学与三角函数 ==========
   {
     id: 'sum-001',
@@ -3055,7 +3055,10 @@ export const formulaCombinations: FormulaCombination[] = [
       },
     },
   },
-  // ========== 更多数学与三角函数 ==========
+]
+
+// ========== 额外公式（待整合） ==========
+const _extraFormulas: Formula[] = [
   {
     id: 'abs-001',
     name: 'ABS',
@@ -3737,3 +3740,12 @@ export const tags = [
   '统计',
   '数据库',
 ]
+
+// 合并后的公式数组（过滤掉id为数字的错误公式，添加额外公式）
+const _mergedFormulas: Formula[] = [
+  ..._originalFormulas.filter(f => !/^\d+$/.test(f.id)),
+  ..._extraFormulas,
+]
+
+// 导出最终的公式数组
+export const formulas = _mergedFormulas
