@@ -1748,6 +1748,10 @@ export const formulaCombinations: FormulaCombination[] = [
     useCase: '需要同时满足多个条件时才返回某个结果',
     advantage: 'AND函数确保所有条件都满足，逻辑更严谨',
   },
+]
+
+// ========== 更多公式（从formulaCombinations提取） ==========
+const _middleFormulas: Formula[] = [
   // ========== 更多文本处理函数 ==========
   {
     id: 'left-001',
@@ -3742,10 +3746,29 @@ export const tags = [
 ]
 
 // 合并后的公式数组（过滤掉id为数字的错误公式，添加额外公式）
-const _mergedFormulas: Formula[] = [
-  ..._originalFormulas.filter(f => !/^\d+$/.test(f.id)),
-  ..._extraFormulas,
-]
+// 收集所有正确格式的公式
+const _allFormulasInFile: Formula[] = []
+
+// 从_originalFormulas提取
+_originalFormulas.forEach(f => {
+  if (/^[a-z]+-[0-9]+$/.test(f.id)) {
+    _allFormulasInFile.push(f)
+  }
+})
+
+// 从_middleFormulas提取
+_middleFormulas.forEach(f => {
+  if (/^[a-z]+-[0-9]+$/.test(f.id)) {
+    _allFormulasInFile.push(f)
+  }
+})
+
+// 从_extraFormulas提取
+_extraFormulas.forEach(f => {
+  if (/^[a-z]+-[0-9]+$/.test(f.id)) {
+    _allFormulasInFile.push(f)
+  }
+})
 
 // 导出最终的公式数组
-export const formulas = _mergedFormulas
+export const formulas = _allFormulasInFile
