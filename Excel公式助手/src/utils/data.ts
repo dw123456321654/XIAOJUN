@@ -3057,6 +3057,678 @@ export const formulaCombinations: FormulaCombination[] = [
   },
 ]
 
+  // ========== 更多数学与三角函数 ==========
+  {
+    id: 'abs-001',
+    name: 'ABS',
+    formula: '=ABS(number)',
+    description: '绝对值。返回数字的绝对值,忽略正负号。常用于计算差额、距离等。',
+    tags: ['数学与三角'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '-10' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '20' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ABS(A2)',
+        result: '10',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '预算' }, { id: 2, value: '实际' }, { id: 3, value: '差异' }] },
+          { id: 3, cells: [{ id: 1, value: '100' }, { id: 2, value: '120' }, { id: 3, value: '' }] },
+        ],
+        formula: '=ABS(B3-A3)',
+        result: '20',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '-10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SUM(ABS(A2), ABS(A3))',
+        result: '40',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '温度差' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '-5' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ABS(A3)',
+        result: '5',
+      },
+    },
+  },
+  {
+    id: 'int-001',
+    name: 'INT',
+    formula: '=INT(number)',
+    description: '向下取整。将数字向下舍入到最接近的整数。',
+    tags: ['数学与三角'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '3.7' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '-2.3' }, { id: 2, value: '' }] },
+        ],
+        formula: '=INT(A2)',
+        result: '3',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '3' }] },
+        ],
+        formula: '=INT(A2/B2)',
+        result: '3',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '3.7' }, { id: 2, value: '' }] },
+        ],
+        formula: '=INT(A2)+1',
+        result: '4',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '100' }, { id: 2, value: '3' }] },
+        ],
+        formula: '=INT(A2/B2)&"人"',
+        result: '33人',
+      },
+    },
+  },
+  {
+    id: 'mod-001',
+    name: 'MOD',
+    formula: '=MOD(number, divisor)',
+    description: '取余数。返回除法运算的余数。常用于判断奇偶、周期计算。',
+    tags: ['数学与三角'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '3' }] },
+          { id: 3, cells: [{ id: 1, value: '7' }, { id: 2, value: '2' }] },
+        ],
+        formula: '=MOD(A2, B2)',
+        result: '1',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '2' }] },
+          { id: 3, cells: [{ id: 1, value: '11' }, { id: 2, value: '2' }] },
+        ],
+        formula: '=IF(MOD(A2, 2)=0, "偶数", "奇数")',
+        result: '偶数',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '3' }] },
+        ],
+        formula: '=INT(A2/B2)&"余"&MOD(A2, B2)',
+        result: '3余1',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '工作天数' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '17' }, { id: 2, value: '' }] },
+        ],
+        formula: '=INT(A3/7)&"周"&MOD(A3, 7)&"天"',
+        result: '2周3天',
+      },
+    },
+  },
+  {
+    id: 'roundup-001',
+    name: 'ROUNDUP',
+    formula: '=ROUNDUP(number, num_digits)',
+    description: '向上取整。将数字向上舍入到指定的小数位数。',
+    tags: ['数学与三角'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '3.2' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '-2.7' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ROUNDUP(A2, 0)',
+        result: '4',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '3.14159' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ROUNDUP(A2, 2)',
+        result: '3.15',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '3' }] },
+        ],
+        formula: '=ROUNDUP(A2/B2, 1)',
+        result: '3.4',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '123.45' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ROUNDUP(A2, 0)',
+        result: '124',
+      },
+    },
+  },
+  {
+    id: 'rounddown-001',
+    name: 'ROUNDDOWN',
+    formula: '=ROUNDDOWN(number, num_digits)',
+    description: '向下取整。将数字向下舍入到指定的小数位数。',
+    tags: ['数学与三角'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '3.7' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '-2.3' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ROUNDDOWN(A2, 0)',
+        result: '3',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '3.14159' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ROUNDDOWN(A2, 2)',
+        result: '3.14',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '3' }] },
+        ],
+        formula: '=ROUNDDOWN(A2/B2, 1)',
+        result: '3.3',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '123.99' }, { id: 2, value: '' }] },
+        ],
+        formula: '=ROUNDDOWN(A2, 0)',
+        result: '123',
+      },
+    },
+  },
+  // ========== 更多文本函数 ==========
+  {
+    id: 'trim-001',
+    name: 'TRIM',
+    formula: '=TRIM(text)',
+    description: '删除空格。删除文本中的多余空格,只保留单词之间的单个空格。',
+    tags: ['文本处理'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '  Excel  函数  ' }, { id: 2, value: '' }] },
+        ],
+        formula: '=TRIM(A2)',
+        result: 'Excel 函数',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '张  三' }, { id: 2, value: '' }] },
+        ],
+        formula: '=TRIM(A2)',
+        result: '张 三',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '  Excel  函数  ' }, { id: 2, value: '' }] },
+        ],
+        formula: '=UPPER(TRIM(A2))',
+        result: 'EXCEL 函数',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '  张三  ' }, { id: 2, value: '' }] },
+        ],
+        formula: '=TRIM(A2)',
+        result: '张三',
+      },
+    },
+  },
+  {
+    id: 'upper-001',
+    name: 'UPPER',
+    formula: '=UPPER(text)',
+    description: '转大写。将文本中的所有字母转换为大写。',
+    tags: ['文本处理'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'excel' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: 'Excel' }, { id: 2, value: '' }] },
+        ],
+        formula: '=UPPER(A2)',
+        result: 'EXCEL',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'excel函数' }, { id: 2, value: '' }] },
+        ],
+        formula: '=UPPER(LEFT(A2, 1))&MID(A2, 2, LEN(A2)-1)',
+        result: 'Excel函数',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'excel' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(UPPER(A2)="EXCEL", "英文", "其他")',
+        result: '英文',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'excel' }, { id: 2, value: '' }] },
+        ],
+        formula: '=UPPER(A2)',
+        result: 'EXCEL',
+      },
+    },
+  },
+  {
+    id: 'lower-001',
+    name: 'LOWER',
+    formula: '=LOWER(text)',
+    description: '转小写。将文本中的所有字母转换为小写。',
+    tags: ['文本处理'],
+    difficulty: 'beginner',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'EXCEL' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: 'Excel' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LOWER(A2)',
+        result: 'excel',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'Excel函数' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LOWER(LEFT(A2, 1))&MID(A2, 2, LEN(A2)-1)',
+        result: 'excel函数',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'EXCEL' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LOWER(LEFT(A2, 1))&MID(A2, 2, LEN(A2)-1)',
+        result: 'eXCEL',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'EXCEL' }, { id: 2, value: '' }] },
+        ],
+        formula: '=LOWER(A2)',
+        result: 'excel',
+      },
+    },
+  },
+  {
+    id: 'proper-001',
+    name: 'PROPER',
+    formula: '=PROPER(text)',
+    description: '首字母大写。将文本中每个单词的首字母转换为大写,其余字母转换为小写。',
+    tags: ['文本处理'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'excel function' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: 'EXCEL FUNCTION' }, { id: 2, value: '' }] },
+        ],
+        formula: '=PROPER(A2)',
+        result: 'Excel Function',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'new york' }, { id: 2, value: '' }] },
+        ],
+        formula: '=PROPER(A2)',
+        result: 'New York',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'excel function' }, { id: 2, value: '' }] },
+        ],
+        formula: '=TRIM(PROPER(A2))',
+        result: 'Excel Function',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'zhang san' }, { id: 2, value: '' }] },
+        ],
+        formula: '=PROPER(A2)',
+        result: 'Zhang San',
+      },
+    },
+  },
+  // ========== 更多逻辑函数 ==========
+  {
+    id: 'ifna-001',
+    name: 'IFNA',
+    formula: '=IFNA(value, value_if_na)',
+    description: '处理#N/A错误。如果第一个参数返回#N/A错误,则返回第二个参数。',
+    tags: ['逻辑'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '苹果' }, { id: 2, value: '5' }] },
+          { id: 3, cells: [{ id: 1, value: '香蕉' }, { id: 2, value: '3' }] },
+        ],
+        formula: '=IFNA(VLOOKUP("橙子", A2:B3, 2, FALSE), "未找到")',
+        result: '未找到',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '001' }, { id: 2, value: '张三' }] },
+          { id: 3, cells: [{ id: 1, value: '002' }, { id: 2, value: '李四' }] },
+        ],
+        formula: '=IFNA(VLOOKUP("003", A2:B3, 2, FALSE), "新员工")',
+        result: '新员工',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '苹果' }, { id: 2, value: '5' }] },
+        ],
+        formula: '=IFNA(IFNA(VLOOKUP("橙子", A2:B2, 2, FALSE), VLOOKUP("香蕉", A2:B2, 2, FALSE)), "未找到")',
+        result: '未找到',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '产品ID' }, { id: 2, value: '产品名称' }, { id: 3, value: '价格' }] },
+          { id: 3, cells: [{ id: 1, value: 'P001' }, { id: 2, value: '产品A' }, { id: 3, value: '100' }] },
+        ],
+        formula: '=IFNA(VLOOKUP("P002", A3:C3, 2, FALSE), "产品不存在")',
+        result: '产品不存在',
+      },
+    },
+  },
+  {
+    id: 'ifs-001',
+    name: 'IFS',
+    formula: '=IFS(logical_test1, value_if_true1, [logical_test2, value_if_true2], ...)',
+    description: '多条件判断。按顺序测试多个条件,返回第一个为TRUE的结果。比嵌套IF更简洁。',
+    tags: ['逻辑'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '85' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IFS(A2>=90, "优秀", A2>=80, "良好", A2>=60, "及格", TRUE, "不及格")',
+        result: '良好',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '85' }, { id: 2, value: '90' }, { id: 3, value: '' }] },
+        ],
+        formula: '=IFS(AND(A2>=60, B2>=60), "双及格", A2>=60, "语文及格", B2>=60, "数学及格", TRUE, "双不及格")',
+        result: '双及格',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '85' }, { id: 2, value: '' }] },
+        ],
+        formula: '=UPPER(LEFT(IFS(A2>=90, "优秀", A2>=80, "良好", TRUE, "及格"), 1))',
+        result: 'L',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '销售额' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '8000' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IFS(A3>=10000, "金奖", A3>=8000, "银奖", A3>=5000, "铜奖", TRUE, "未达标")',
+        result: '银奖',
+      },
+    },
+  },
+  {
+    id: 'switch-001',
+    name: 'SWITCH',
+    formula: '=SWITCH(expression, value1, result1, [default])',
+    description: '多值匹配。根据表达式的值返回对应的结果。适合值与结果一一对应的场景。',
+    tags: ['逻辑'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'A' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: 'B' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SWITCH(A2, "A", "优秀", "B", "良好", "C", "及格", "其他")',
+        result: '优秀',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '第一季度' }, { id: 2, value: '1-3月' }, { id: 3, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '第二季度' }, { id: 2, value: '4-6月' }, { id: 3, value: '' }] },
+        ],
+        formula: '=SWITCH(A2, "第一季度", "1-3月", "第二季度", "4-6月", "第三季度", "7-9月", "第四季度", "10-12月", "未知")',
+        result: '1-3月',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: 'A' }, { id: 2, value: '' }] },
+        ],
+        formula: '=IF(SWITCH(A2, "A", TRUE, FALSE), "及格", "不及格")',
+        result: '及格',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '部门' }, { id: 2, value: '负责人' }] },
+          { id: 3, cells: [{ id: 1, value: '销售部' }, { id: 2, value: '' }] },
+        ],
+        formula: '=SWITCH(A3, "销售部", "张三", "技术部", "李四", "财务部", "王五", "未分配")',
+        result: '张三',
+      },
+    },
+  },
+  // ========== 更多查找与引用函数 ==========
+  {
+    id: 'match-001',
+    name: 'MATCH',
+    formula: '=MATCH(lookup_value, lookup_array, [match_type])',
+    description: '查找位置。返回值在数组中的相对位置。常与INDEX组合使用。',
+    tags: ['查找与引用'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '苹果' }, { id: 2, value: '5' }] },
+          { id: 3, cells: [{ id: 1, value: '香蕉' }, { id: 2, value: '3' }] },
+          { id: 4, cells: [{ id: 1, value: '橙子' }, { id: 2, value: '2' }] },
+        ],
+        formula: '=MATCH("香蕉", A2:A4, 0)',
+        result: '2',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '20' }, { id: 2, value: '' }] },
+          { id: 4, cells: [{ id: 1, value: '30' }, { id: 2, value: '' }] },
+        ],
+        formula: '=MATCH(25, A2:A4, 1)',
+        result: '2',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '苹果' }, { id: 2, value: '5' }] },
+          { id: 3, cells: [{ id: 1, value: '香蕉' }, { id: 2, value: '3' }] },
+        ],
+        formula: '=INDEX(B2:B3, MATCH("香蕉", A2:A3, 0))',
+        result: '3',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '产品A' }, { id: 2, value: '100' }] },
+          { id: 3, cells: [{ id: 1, value: '产品B' }, { id: 2, value: '150' }] },
+          { id: 4, cells: [{ id: 1, value: '产品C' }, { id: 2, value: '200' }] },
+        ],
+        formula: '=MATCH("产品B", A2:A4, 0)',
+        result: '2',
+      },
+    },
+  },
+  {
+    id: 'index-001',
+    name: 'INDEX',
+    formula: '=INDEX(array, row_num, [column_num])',
+    description: '返回值。返回数组中指定位置的值。常与MATCH组合使用实现灵活查找。',
+    tags: ['查找与引用'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '产品A' }, { id: 2, value: '100' }, { id: 3, value: '200' }] },
+          { id: 3, cells: [{ id: 1, value: '产品B' }, { id: 2, value: '150' }, { id: 3, value: '250' }] },
+        ],
+        formula: '=INDEX(A2:C3, 2, 3)',
+        result: '250',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '一月' }, { id: 2, value: '50000' }, { id: 3, value: '销售' }] },
+          { id: 3, cells: [{ id: 1, value: '二月' }, { id: 2, value: '60000' }, { id: 3, value: '销售' }] },
+          { id: 4, cells: [{ id: 1, value: '三月' }, { id: 2, value: '70000' }, { id: 3, value: '销售' }] },
+        ],
+        formula: '=INDEX(B2:B4, 3)',
+        result: '70000',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '10' }, { id: 2, value: '20' }] },
+          { id: 3, cells: [{ id: 1, value: '30' }, { id: 2, value: '40' }] },
+        ],
+        formula: '=INDEX(A2:A3, MATCH(MAX(A2:A3), A2:A3, 0))',
+        result: '30',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '张三' }, { id: 2, value: '销售部' }, { id: 3, value: '8000' }] },
+          { id: 3, cells: [{ id: 1, value: '李四' }, { id: 2, value: '技术部' }, { id: 3, value: '10000' }] },
+          { id: 4, cells: [{ id: 1, value: '王五' }, { id: 2, value: '销售部' }, { id: 3, value: '9000' }] },
+        ],
+        formula: '=INDEX(C2:C4, MATCH("李四", A2:A4, 0))',
+        result: '10000',
+      },
+    },
+  },
+  {
+    id: 'choose-001',
+    name: 'CHOOSE',
+    formula: '=CHOOSE(index_num, value1, [value2], ...)',
+    description: '选择值。根据索引号返回列表中对应位置的值。',
+    tags: ['查找与引用'],
+    difficulty: 'intermediate',
+    examples: {
+      basic: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2' }, { id: 2, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '1' }, { id: 2, value: '' }] },
+        ],
+        formula: '=CHOOSE(A2, "第一季度", "第二季度", "第三季度", "第四季度")',
+        result: '第二季度',
+      },
+      advanced: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }, { id: 3, value: 'C' }] },
+          { id: 2, cells: [{ id: 1, value: '周一' }, { id: 2, value: '100' }, { id: 3, value: '' }] },
+          { id: 3, cells: [{ id: 1, value: '周二' }, { id: 2, value: '150' }, { id: 3, value: '' }] },
+          { id: 4, cells: [{ id: 1, value: '周三' }, { id: 2, value: '200' }, { id: 3, value: '' }] },
+        ],
+        formula: '=SUM(CHOOSE(1, B2:B3), CHOOSE(2, B2:B3))',
+        result: '450',
+      },
+      nested: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '2' }, { id: 2, value: '' }] },
+        ],
+        formula: '=CHOOSE(A2, "优秀", "良好", "及格")',
+        result: '良好',
+      },
+      real: {
+        data: [
+          { id: 1, cells: [{ id: 1, value: 'A' }, { id: 2, value: 'B' }] },
+          { id: 2, cells: [{ id: 1, value: '1' }, { id: 2, value: '' }] },
+        ],
+        formula: '=CHOOSE(A2, "一等奖", "二等奖", "三等奖")',
+        result: '一等奖',
+      },
+    },
+  },
+]
+
 // 标签列表
 export const tags = [
   '查找与引用',
