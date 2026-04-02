@@ -4,6 +4,23 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)。
 
+## [0.2.4] - 2026-04-03
+
+### 新增
+- CHANGELOG.md 版本变更记录
+
+### 文档
+- 重写 README.md，添加项目介绍、功能说明、安装指南
+- 简化 PROGRESS.md，归档历史记录
+- 完善 .gitignore 排除规则
+
+### 修复
+- 更新 Home.vue 公式数量 51→55
+- 更新 Settings.vue 版本号
+- 清理 Combinations.vue、PersonalCaseSubmit.vue、RealCases.vue 中的 console.log 调试代码
+
+---
+
 ## [0.2.3] - 2026-04-01
 
 ### 新增
