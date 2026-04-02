@@ -174,7 +174,7 @@ function copyFormula(formula: string) {
 
 function showDetail(combo: FormulaCombination) {
   // TODO: 显示详情对话框
-  console.log(combo)
+  message.info('📖 详情功能开发中...')
 }
 </script>
 

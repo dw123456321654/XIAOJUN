@@ -273,13 +273,11 @@ function viewCase(id: string) {
 function downloadTemplate(caseItem: RealCase) {
   // TODO: 实现模板下载功能
   message.info(`📥 下载模板：${caseItem.title}`)
-  console.log('Download template:', caseItem.downloadUrl)
 }
 
 function applyCase(caseItem: RealCase) {
   // TODO: 实现案例应用功能
   message.info(`✨ 应用案例：${caseItem.title}`)
-  console.log('Apply case:', caseItem)
 }
 
 function copyFormulas(caseItem: RealCase) {
