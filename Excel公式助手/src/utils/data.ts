@@ -3734,7 +3734,7 @@ const _extraFormulas: Formula[] = [
   },
   // ========== 数学与三角函数补充 ==========
   {
-    id: 'abs-001',
+    id: 'abs-002',
     name: 'ABS',
     formula: '=ABS(number)',
     description: '绝对值。返回数字的绝对值。',
@@ -3788,7 +3788,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'mod-001',
+    id: 'mod-002',
     name: 'MOD',
     formula: '=MOD(number, divisor)',
     description: '取模。返回两数相除的余数。',
@@ -3900,7 +3900,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'max-001',
+    id: 'max-002',
     name: 'MAX',
     formula: '=MAX(number1, [number2], ...)',
     description: '最大值。返回一组数值中的最大值。',
@@ -3919,7 +3919,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'min-001',
+    id: 'min-002',
     name: 'MIN',
     formula: '=MIN(number1, [number2], ...)',
     description: '最小值。返回一组数值中的最小值。',
@@ -3938,7 +3938,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'large-001',
+    id: 'large-002',
     name: 'LARGE',
     formula: '=LARGE(array, k)',
     description: '第k大值。返回数据集中第k个最大值。',
@@ -3958,7 +3958,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'small-001',
+    id: 'small-002',
     name: 'SMALL',
     formula: '=SMALL(array, k)',
     description: '第k小值。返回数据集中第k个最小值。',
@@ -3978,7 +3978,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'rank-001',
+    id: 'rank-002',
     name: 'RANK',
     formula: '=RANK(number, ref, [order])',
     description: '排名。返回数字在列表中的排名。',
@@ -4000,7 +4000,7 @@ const _extraFormulas: Formula[] = [
   },
   // ========== 文本函数补充 ==========
   {
-    id: 'left-001',
+    id: 'left-002',
     name: 'LEFT',
     formula: '=LEFT(text, [num_chars])',
     description: '左侧字符。从文本左侧提取指定数量的字符。',
@@ -4018,7 +4018,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'right-001',
+    id: 'right-002',
     name: 'RIGHT',
     formula: '=RIGHT(text, [num_chars])',
     description: '右侧字符。从文本右侧提取指定数量的字符。',
@@ -4036,7 +4036,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'mid-001',
+    id: 'mid-002',
     name: 'MID',
     formula: '=MID(text, start_num, num_chars)',
     description: '中间字符。从文本指定位置提取指定数量的字符。',
@@ -4054,7 +4054,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'len-001',
+    id: 'len-002',
     name: 'LEN',
     formula: '=LEN(text)',
     description: '文本长度。返回文本字符串中的字符数。',
@@ -4072,7 +4072,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'find-001',
+    id: 'find-002',
     name: 'FIND',
     formula: '=FIND(find_text, within_text, [start_num])',
     description: '查找位置。返回一个字符串在另一个字符串中的起始位置。',
@@ -4108,7 +4108,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'replace-001',
+    id: 'replace-002',
     name: 'REPLACE',
     formula: '=REPLACE(old_text, start_num, num_chars, new_text)',
     description: '替换字符。替换文本中指定位置的字符。',
@@ -4126,7 +4126,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'substitute-001',
+    id: 'substitute-002',
     name: 'SUBSTITUTE',
     formula: '=SUBSTITUTE(text, old_text, new_text, [instance_num])',
     description: '替换文本。将文本中的指定内容替换为新内容。',
@@ -4145,7 +4145,7 @@ const _extraFormulas: Formula[] = [
   },
   // ========== 日期时间函数补充 ==========
   {
-    id: 'today-001',
+    id: 'today-002',
     name: 'TODAY',
     formula: '=TODAY()',
     description: '当前日期。返回今天的日期。',
@@ -4163,7 +4163,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'now-001',
+    id: 'now-002',
     name: 'NOW',
     formula: '=NOW()',
     description: '当前日期时间。返回当前的日期和时间。',
@@ -4181,7 +4181,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'year-001',
+    id: 'year-002',
     name: 'YEAR',
     formula: '=YEAR(serial_number)',
     description: '提取年份。返回日期的年份。',
@@ -4199,7 +4199,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'month-001',
+    id: 'month-002',
     name: 'MONTH',
     formula: '=MONTH(serial_number)',
     description: '提取月份。返回日期的月份（1-12）。',
@@ -4217,7 +4217,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'day-001',
+    id: 'day-002',
     name: 'DAY',
     formula: '=DAY(serial_number)',
     description: '提取日。返回日期的日（1-31）。',
@@ -4253,7 +4253,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'datedif-001',
+    id: 'datedif-002',
     name: 'DATEDIF',
     formula: '=DATEDIF(start_date, end_date, unit)',
     description: '日期差。计算两个日期之间的差值。',
@@ -4307,7 +4307,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'networkdays-001',
+    id: 'networkdays-002',
     name: 'NETWORKDAYS',
     formula: '=NETWORKDAYS(start_date, end_date, [holidays])',
     description: '工作日数。计算两个日期之间的工作日数。',
@@ -4326,7 +4326,7 @@ const _extraFormulas: Formula[] = [
   },
   // ========== 逻辑函数补充 ==========
   {
-    id: 'and-001',
+    id: 'and-002',
     name: 'AND',
     formula: '=AND(logical1, [logical2], ...)',
     description: '逻辑与。所有参数都为TRUE时返回TRUE。',
@@ -4344,7 +4344,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'or-001',
+    id: 'or-002',
     name: 'OR',
     formula: '=OR(logical1, [logical2], ...)',
     description: '逻辑或。任一参数为TRUE时返回TRUE。',
@@ -4398,7 +4398,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'ifs-001',
+    id: 'ifs-002',
     name: 'IFS',
     formula: '=IFS(condition1, value1, [condition2, value2], ...)',
     description: '多条件判断。按顺序检查条件，返回第一个TRUE对应的值。',
@@ -4416,7 +4416,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'iferror-001',
+    id: 'iferror-002',
     name: 'IFERROR',
     formula: '=IFERROR(value, value_if_error)',
     description: '错误处理。如果公式出错则返回指定值。',
@@ -4434,7 +4434,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'ifna-001',
+    id: 'ifna-002',
     name: 'IFNA',
     formula: '=IFNA(value, value_if_na)',
     description: 'N/A处理。如果公式返回#N/A则返回指定值。',
@@ -4471,7 +4471,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'offset-001',
+    id: 'offset-002',
     name: 'OFFSET',
     formula: '=OFFSET(reference, rows, cols, [height], [width])',
     description: '偏移引用。返回相对于起始位置的引用。',
@@ -4601,7 +4601,7 @@ const _extraFormulas: Formula[] = [
   },
   // ========== 信息函数补充 ==========
   {
-    id: 'istext-001',
+    id: 'istext-002',
     name: 'ISTEXT',
     formula: '=ISTEXT(value)',
     description: '是否为文本。判断值是否为文本类型。',
@@ -4619,7 +4619,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'isnumber-001',
+    id: 'isnumber-002',
     name: 'ISNUMBER',
     formula: '=ISNUMBER(value)',
     description: '是否为数字。判断值是否为数字类型。',
@@ -4637,7 +4637,7 @@ const _extraFormulas: Formula[] = [
     },
   },
   {
-    id: 'isblank-001',
+    id: 'isblank-002',
     name: 'ISBLANK',
     formula: '=ISBLANK(value)',
     description: '是否为空。判断单元格是否为空。',

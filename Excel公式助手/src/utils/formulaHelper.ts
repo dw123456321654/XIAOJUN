@@ -57,7 +57,8 @@ export function searchFormulas(
     (f) =>
       f.name.toLowerCase().includes(lowerQuery) ||
       f.formula.toLowerCase().includes(lowerQuery) ||
-      f.description.toLowerCase().includes(lowerQuery)
+      f.description.toLowerCase().includes(lowerQuery) ||
+      f.tags.some(tag => tag.toLowerCase().includes(lowerQuery))
   )
 }
 
