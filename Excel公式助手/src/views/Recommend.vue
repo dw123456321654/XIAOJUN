@@ -115,10 +115,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useMessage } from 'naive-ui'
 import { NInput, NButton, NTag } from 'naive-ui'
 import { formulas } from '../utils/data'
 
 const router = useRouter()
+const message = useMessage()
 const inputData = ref('')
 const desiredResult = ref('')
 const analyzing = ref(false)
@@ -147,82 +149,155 @@ async function recommend() {
 
   const matches: any[] = []
 
+  // 关键词映射表
+  const keywordMap: Record<string, string[]> = {
+    // 查找相关
+    'VLOOKUP': ['查找', '找', '匹配', '查询', '对应', '提取值', '获取值'],
+    'INDEX+MATCH': ['查找', '找', '匹配', '查询', '双向查找', '多条件查找', '行列查找'],
+
+    // 求和相关
+    'SUM': ['求和', '总数', '加', '合计', '汇总', '统计', '计算总和'],
+    'SUMIF': ['求和', '总数', '加', '合计', '汇总', '条件求和', '按条件求和', '分类求和'],
+    'SUMIFS': ['求和', '总数', '加', '合计', '汇总', '多条件求和', '按多个条件求和'],
+
+    // 计数相关
+    'COUNT': ['计数', '数量', '个数', '统计个数', '有多少个'],
+    'COUNTA': ['计数', '数量', '个数', '统计个数', '有多少个', '非空计数'],
+    'COUNTIF': ['计数', '数量', '个数', '统计个数', '条件计数', '按条件计数'],
+    'COUNTIFS': ['计数', '数量', '个数', '统计个数', '多条件计数', '按多个条件计数'],
+
+    // 平均值相关
+    'AVERAGE': ['平均', '平均值', '平均数', '求平均', '计算平均'],
+    'AVERAGEIF': ['平均', '平均值', '平均数', '求平均', '条件平均', '按条件求平均'],
+    'AVERAGEIFS': ['平均', '平均值', '平均数', '求平均', '多条件平均', '按多个条件求平均'],
+
+    // 最大值最小值
+    'MAX': ['最大', '最大值', '最高', '求最大'],
+    'MIN': ['最小', '最小值', '最低', '求最小'],
+
+    // 文本处理
+    'LEFT': ['左边', '左', '前几个', '截取左边', '提取左边'],
+    'RIGHT': ['右边', '右', '后几个', '截取右边', '提取右边'],
+    'MID': ['中间', '截取', '提取', '从第几个', '提取部分'],
+    'LEN': ['长度', '字符数', '字数', '计算长度'],
+    'CONCATENATE': ['合并', '拼接', '组合', '连接', '连起来'],
+    'TEXT': ['格式', '日期格式', '时间格式', '文本格式', '转换格式'],
+
+    // 判断逻辑
+    'IF': ['如果', '判断', '是否', '条件', '满足', '当', '否则'],
+    'AND': ['并且', '同时', '都', '并且是'],
+    'OR': ['或者', '或者是', '至少一个'],
+    'NOT': ['不', '非', '否定', '相反'],
+
+    // 日期时间
+    'TODAY': ['今天', '当前日期', '今天的日期'],
+    'NOW': ['现在', '当前时间', '现在的时间', '今天时间'],
+    'YEAR': ['年', '年份', '提取年份', '年份'],
+    'MONTH': ['月', '月份', '提取月份', '几月'],
+    'DAY': ['日', '日期', '提取日期', '几号'],
+    'DATEDIF': ['日期差', '天数差', '相隔', '日期间隔', '相差几天'],
+    'NETWORKDAYS': ['工作日', '工作天数', '排除周末', '计算工作日'],
+
+    // 舍入四舍五入
+    'ROUND': ['四舍五入', '舍入', '保留小数', '保留几位小数'],
+    'ROUNDUP': ['向上舍入', '向上取整', '进位'],
+    'ROUNDDOWN': ['向下舍入', '向下取整', '舍去'],
+
+    // 错误处理
+    'IFERROR': ['错误', '出错', '错误处理', '容错', '错误时'],
+    'ISERROR': ['判断错误', '是否错误', '检查错误'],
+    'ISBLANK': ['空', '空白', '是否为空', '空值'],
+
+    // 财务
+    'PMT': ['还款', '分期', '贷款', '每月还款', '计算还款'],
+    'PV': ['现值', '本金', '当前价值', '投资现值'],
+    'FV': ['终值', '未来价值', '投资收益'],
+  }
+
   // 分析各种场景
   formulas.forEach((formula) => {
     let confidence = 0
-    let reason = ''
+    let reasons: string[] = []
     let suggestedFormula = formula.examples.basic.formula
     let example = formula.examples.basic.result
 
-    // 查找场景
-    if (input.includes('查找') || result.includes('查找') || result.includes('找')) {
-      if (formula.name === 'VLOOKUP' || formula.name === 'INDEX+MATCH') {
-        confidence += 40
-        reason = '你需要查找数据，' + formula.name + ' 是最常用的查找函数'
+    // 获取公式对应的关键词
+    const keywords = keywordMap[formula.name] || []
+
+    // 匹配关键词
+    keywords.forEach((keyword) => {
+      if (result.includes(keyword)) {
+        confidence += 15
+        reasons.push(`匹配关键词"${keyword}"`)
+      }
+      if (input.includes(keyword)) {
+        confidence += 10
+      }
+    })
+
+    // 查找场景特殊判断
+    if (result.includes('查找') || result.includes('找') || result.includes('匹配')) {
+      if (formula.name === 'VLOOKUP') {
+        confidence += 25
+        reasons.push('VLOOKUP是最常用的查找函数')
+      }
+      if (formula.name === 'INDEX+MATCH') {
+        confidence += 20
+        reasons.push('INDEX+MATCH比VLOOKUP更灵活')
       }
     }
 
-    // 统计/求和场景
-    if (result.includes('统计') || result.includes('求和') || result.includes('总数') || result.includes('加')) {
-      if (formula.name === 'SUMIF') {
-        confidence += 40
-        reason = '你需要按条件统计数据，SUMIF 可以实现条件求和'
-      } else if (formula.name === 'COUNTIF') {
-        confidence += 35
-        reason = '你需要统计数量，COUNTIF 可以实现条件计数'
+    // 多条件判断
+    if (result.includes('多个') || result.includes('多条件')) {
+      if (formula.name.includes('IFS') || formula.name === 'INDEX+MATCH') {
+        confidence += 20
+        reasons.push('支持多条件处理')
       }
     }
 
-    // 文本处理场景
-    if (result.includes('合并') || result.includes('拼接') || result.includes('组合')) {
-      if (formula.name === 'CONCATENATE') {
-        confidence += 45
-        reason = '你需要合并文本，CONCATENATE 是最常用的文本合并函数'
+    // 嵌套函数
+    if (result.includes('嵌套') || result.includes('组合')) {
+      if (formula.name === 'IF' || formula.name === 'VLOOKUP') {
+        confidence += 15
+        reasons.push('支持嵌套使用')
       }
     }
 
-    // 判断场景
-    if (result.includes('如果') || result.includes('判断') || result.includes('是否')) {
-      if (formula.name === 'IF') {
-        confidence += 45
-        reason = '你需要进行逻辑判断，IF 是最常用的条件函数'
-      }
-    }
-
-    // 提取场景
-    if (result.includes('提取') || result.includes('截取')) {
-      if (formula.name === 'MID') {
-        confidence += 45
-        reason = '你需要提取部分文本，MID 可以从指定位置提取指定数量的字符'
-      }
-    }
-
-    // 日期场景
-    if (result.includes('日期') || result.includes('今天') || result.includes('当前')) {
-      if (formula.name === 'TODAY') {
-        confidence += 40
-        reason = '你需要获取当前日期，TODAY 可以返回今天的日期'
-      }
-    }
-
-    // 根据输入数据判断
+    // 输入数据特征分析
     if (input.includes(',')) {
       // 有逗号分隔的数据
       if (formula.name === 'SUMIF' || formula.name === 'COUNTIF') {
-        confidence += 20
+        confidence += 15
+        reasons.push('输入数据包含分隔符，适合条件统计')
+      }
+      if (formula.name === 'CONCATENATE' || formula.name === 'TEXT') {
+        confidence += 10
+        reasons.push('输入数据包含分隔符，适合文本处理')
       }
     }
 
-    if (input.includes('=') || result.includes('=')) {
+    if (input.includes('=')) {
       // 提到了公式
-      confidence += 15
+      confidence += 5
     }
+
+    // 分类权重
+    const categoryWeights: Record<string, number> = {
+      '数学与三角': 1.0,
+      '查找与引用': 1.1,
+      '逻辑': 1.1,
+      '文本': 1.0,
+      '日期与时间': 1.0,
+      '统计': 1.0,
+    }
+    const weight = categoryWeights[formula.category] || 1.0
+    confidence *= weight
 
     if (confidence > 0) {
       matches.push({
         formula,
-        confidence,
-        reason,
+        confidence: Math.min(confidence, 100), // 最大100
+        reason: reasons.join('，') || '根据您的描述推荐',
         suggestedFormula,
         example,
       })
@@ -249,8 +324,11 @@ function viewFormula(id: string) {
 }
 
 function copyFormula(formula: string) {
-  navigator.clipboard.writeText(formula)
-  // TODO: 显示复制成功提示
+  navigator.clipboard.writeText(formula).then(() => {
+    message.success('📋 公式已复制到剪贴板')
+  }).catch(() => {
+    message.error('❌ 复制失败，请重试')
+  })
 }
 </script>
 

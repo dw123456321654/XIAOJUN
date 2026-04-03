@@ -367,7 +367,6 @@ function previewCase() {
 
   // TODO: 实现案例预览功能
   message.info('👁 案例预览功能开发中...')
-  console.log('Form data:', form)
 }
 
 function saveCase() {

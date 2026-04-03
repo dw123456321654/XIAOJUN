@@ -114,11 +114,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { NTag } from 'naive-ui'
+import { useMessage } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { formulaCombinations } from '../utils/formulaCombinations'
 import type { FormulaCombination } from '../types'
 
 const router = useRouter()
+const message = useMessage()
 
 const selectedDifficulty = ref('')
 const selectedPopularity = ref('')
@@ -164,13 +166,15 @@ function startPractice(id: number) {
 
 function copyFormula(formula: string) {
   navigator.clipboard.writeText(formula).then(() => {
-    // TODO: 显示复制成功提示
+    message.success('📋 公式已复制到剪贴板')
+  }).catch(() => {
+    message.error('❌ 复制失败，请重试')
   })
 }
 
 function showDetail(combo: FormulaCombination) {
   // TODO: 显示详情对话框
-  console.log(combo)
+  message.info('📖 详情功能开发中...')
 }
 </script>
 

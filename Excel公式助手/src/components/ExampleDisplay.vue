@@ -12,6 +12,7 @@
     <div class="example-formula">
       <label>公式：</label>
       <code>{{ example.formula }}</code>
+      <button @click="copyFormula" class="copy-btn">📋</button>
     </div>
     <div class="example-result">
       <span class="result-label">结果：</span>
@@ -21,11 +22,22 @@
 </template>
 
 <script setup lang="ts">
+import { useMessage } from 'naive-ui'
 import type { Example } from '../types'
 
-defineProps<{
+const props = defineProps<{
   example: Example
 }>()
+
+const message = useMessage()
+
+function copyFormula() {
+  navigator.clipboard.writeText(props.example.formula).then(() => {
+    message.success('📋 公式已复制到剪贴板')
+  }).catch(() => {
+    message.error('❌ 复制失败，请重试')
+  })
+}
 </script>
 
 <style scoped lang="scss">
@@ -66,6 +78,7 @@ defineProps<{
   border-radius: 6px;
   margin-bottom: 1rem;
   border-left: 3px solid #3b82f6;
+  position: relative;
 
   label {
     display: block;
@@ -82,6 +95,27 @@ defineProps<{
     color: #2563eb;
     line-height: 1.5;
     word-break: break-all;
+    padding-right: 3rem;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    color: #6b7280;
+    padding: 0.375rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover {
+    background: #f9fafb;
+    border-color: #3b82f6;
+    color: #3b82f6;
   }
 }
 

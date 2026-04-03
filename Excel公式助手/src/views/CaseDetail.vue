@@ -125,6 +125,9 @@ import { useMessage } from 'naive-ui'
 import TableGrid from '../components/TableGrid.vue'
 import { getCaseById } from '../utils/realCases'
 import type { RealCase } from '../types'
+import * as XLSX from 'xlsx'
+import { save } from '@tauri-apps/plugin-dialog'
+import { writeFile } from '@tauri-apps/plugin-fs'
 
 const route = useRoute()
 const router = useRouter()
@@ -150,10 +153,59 @@ function goBack() {
   router.push('/real-cases')
 }
 
-function downloadTemplate() {
-  // TODO: 实现Excel模板下载
-  message.info(`📥 下载Excel模板：${caseItem.value?.title}`)
-  console.log('Download template:', caseItem.value?.downloadUrl)
+async function downloadTemplate() {
+  if (!caseItem.value) return
+
+  try {
+    // 准备Excel数据
+    const headers = caseItem.value.dataTemplate.headers
+    const rows = caseItem.value.dataTemplate.rows
+
+    // 构建Excel数据数组（第一行是表头）
+    const excelData = [headers, ...rows]
+
+    // 创建工作簿
+    const workbook = XLSX.utils.book_new()
+
+    // 创建工作表
+    const worksheet = XLSX.utils.aoa_to_sheet(excelData)
+
+    // 设置列宽（每列宽度15）
+    const colWidths = headers.map(() => ({ wch: 15 }))
+    worksheet['!cols'] = colWidths
+
+    // 添加工作表到工作簿
+    XLSX.utils.book_append_sheet(workbook, worksheet, '数据模板')
+
+    // 生成文件名（移除特殊字符）
+    const safeTitle = caseItem.value.title.replace(/[<>:"/\\|?*]/g, '_')
+    const defaultFileName = `${safeTitle}_模板.xlsx`
+
+    // 弹出保存对话框
+    const filePath = await save({
+      filters: [
+        { name: 'Excel文件', extensions: ['xlsx'] }
+      ],
+      defaultPath: defaultFileName
+    })
+
+    if (filePath) {
+      // 将工作簿转换为二进制数据
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+      const binaryData = new Uint8Array(excelBuffer)
+
+      // 写入文件
+      await writeFile(filePath, binaryData)
+
+      message.success(`📥 Excel模板已保存：${filePath}`)
+    } else {
+      // 用户取消了保存对话框
+      message.info('已取消保存')
+    }
+  } catch (error) {
+    console.error('Download template error:', error)
+    message.error('❌ 下载失败，请重试')
+  }
 }
 
 function copyData() {

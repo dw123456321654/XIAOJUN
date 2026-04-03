@@ -132,6 +132,20 @@ watch(() => store.settings.theme, () => {
   applyTheme()
 })
 
+// 监听字体大小变化
+watch(() => store.settings.fontSize, () => {
+  applyFontSize()
+})
+
+function applyFontSize() {
+  const fontSizeMap: Record<string, string> = {
+    small: '14px',
+    medium: '16px',
+    large: '18px',
+  }
+  document.documentElement.style.fontSize = fontSizeMap[store.settings.fontSize]
+}
+
 function applyTheme() {
   const html = document.documentElement
   if (store.settings.theme === 'dark') {
