@@ -4,6 +4,25 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)。
 
+## [0.3.0] - 2026-04-03
+
+### 新增
+- 新增 70 个 Excel 公式，公式总数达到 125 个
+- **数学与三角函数**：ABS, CEILING, FLOOR, MOD, POWER, SQRT, TRUNC, SEQUENCE, RANDARRAY
+- **统计函数**：AVERAGEIF, COUNTBLANK, MAX, MIN, LARGE, SMALL, RANK
+- **文本函数**：LEFT, RIGHT, LEN, FIND, SEARCH, REPLACE, SUBSTITUTE, TEXTJOIN, CONCAT, TEXTSPLIT
+- **日期时间函数**：TODAY, NOW, YEAR, MONTH, DAY, WEEKDAY, DATEDIF, EOMONTH, WORKDAY, NETWORKDAYS
+- **逻辑函数**：AND, OR, NOT, XOR, IFS, IFERROR, IFNA
+- **查找与引用函数**：INDIRECT, OFFSET, ROW, COLUMN, ROWS, COLUMNS, TRANSPOSE, HYPERLINK, FILTER, SORT, UNIQUE
+- **信息函数**：ISTEXT, ISNUMBER, ISBLANK, ISERROR, ISNA, ISEVEN, ISODD, TYPE
+- **财务函数**：PMT, PV, FV, RATE, NPER
+- 新增标签分类：信息、财务
+
+### 优化
+- 公式 ID 语义化改造（数字 ID 改为 `函数名-001` 格式）
+
+---
+
 ## [0.2.4] - 2026-04-03
 
 ### 新增

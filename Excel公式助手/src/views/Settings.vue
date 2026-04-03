@@ -53,7 +53,7 @@
         <div class="setting-item">
           <div class="setting-info">
             <label class="setting-label">应用版本</label>
-            <p class="setting-description">Excel公式助手 v0.2.4</p>
+            <p class="setting-description">Excel公式助手 v0.3.0</p>
           </div>
         </div>
 

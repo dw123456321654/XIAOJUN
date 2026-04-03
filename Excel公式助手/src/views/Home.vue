@@ -2,7 +2,7 @@
   <div class="home-container">
     <div class="hero-section">
       <h1 class="hero-title">Excel公式助手</h1>
-      <p class="hero-subtitle">55个常用公式，实时预览，轻松学习</p>
+      <p class="hero-subtitle">125个常用公式，实时预览，轻松学习</p>
 
       <div class="action-buttons">
         <n-button type="primary" size="large" @click="router.push('/recommend')">
