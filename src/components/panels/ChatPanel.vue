@@ -3,7 +3,9 @@
     <!-- 消息列表 -->
     <div class="message-list" ref="messageListRef">
       <div v-if="messages.length === 0" class="empty-state">
-        <p>👋 开始和 AI 助手对话吧！</p>
+        <div class="empty-avatar">{{ currentRole.avatar }}</div>
+        <p class="empty-greeting">{{ currentRole.greeting || '开始对话吧！' }}</p>
+        <p class="empty-hint">正在和 {{ currentRole.nickname }} 对话</p>
       </div>
       
       <div
@@ -14,13 +16,13 @@
       >
         <div class="message-avatar">
           <span v-if="msg.role === 'user'">👤</span>
-          <span v-else-if="msg.role === 'assistant'">🤖</span>
+          <span v-else-if="msg.role === 'assistant'">{{ currentRole.avatar }}</span>
           <span v-else>⚙️</span>
         </div>
         <div class="message-content">
           <div class="message-header">
             <span class="message-role">
-              {{ msg.role === 'user' ? '你' : msg.role === 'assistant' ? 'AI' : '系统' }}
+              {{ msg.role === 'user' ? '你' : msg.role === 'assistant' ? currentRole.nickname : '系统' }}
             </span>
             <span class="message-time">{{ formatTime(msg.timestamp) }}</span>
           </div>
@@ -30,7 +32,7 @@
       
       <!-- 加载中 -->
       <div v-if="isWaiting" class="message-item assistant">
-        <div class="message-avatar">🤖</div>
+        <div class="message-avatar">{{ currentRole.avatar }}</div>
         <div class="message-content">
           <div class="typing-indicator">
             <span></span>
@@ -122,19 +124,24 @@ import { SendOutline, ContractOutline, AddOutline } from '@vicons/ionicons5'
 import { GatewayClient, ChatMessage, getGatewayClient } from '@/utils/gateway'
 import { useServiceStore } from '@/stores/service'
 import { useChatStore } from '@/stores/chat'
+import { useRoleStore } from '@/stores/role'
 import { readOpenClawConfig } from '@/utils/api'
 
 const message = useMessage()
 const dialog = useDialog()
 const serviceStore = useServiceStore()
 const chatStore = useChatStore()
+const roleStore = useRoleStore()
 
-// 使用 chatStore 的消息列表
+// 使用 chatStore 的消息列表和等待状态
 const messages = computed(() => chatStore.messages)
 const contextUsage = computed(() => chatStore.contextUsage)
+const isWaiting = computed(() => chatStore.isWaiting)
+
+// 当前角色
+const currentRole = computed(() => roleStore.currentRole)
 
 const inputText = ref('')
-const isWaiting = ref(false)
 const messageListRef = ref<HTMLElement | null>(null)
 
 // Gateway 客户端
@@ -247,7 +254,7 @@ async function connectGateway() {
     } else {
       chatStore.addMessage({ ...msg, content, pending: false })
     }
-    isWaiting.value = false
+    chatStore.setWaiting(false)
     
     // 重新计算 token
     chatStore.recalculateTokens()
@@ -277,7 +284,7 @@ async function sendMessage() {
   }
   chatStore.addMessage(userMsg)
   inputText.value = ''
-  isWaiting.value = true
+  chatStore.setWaiting(true)
   
   // 重新计算 token
   chatStore.recalculateTokens()
@@ -285,11 +292,11 @@ async function sendMessage() {
   
   try {
     if (gatewayClient?.isConnected()) {
-      await gatewayClient.sendMessage(text)
+      await gatewayClient.sendMessage(text, chatStore.getSessionKey())
     } else {
       await connectGateway()
       if (gatewayClient?.isConnected()) {
-        await gatewayClient.sendMessage(text)
+        await gatewayClient.sendMessage(text, chatStore.getSessionKey())
       } else {
         throw new Error('未连接到 Gateway')
       }
@@ -297,7 +304,7 @@ async function sendMessage() {
   } catch (error) {
     console.error('[Chat] Send error:', error)
     message.error('发送失败: ' + String(error))
-    isWaiting.value = false
+    chatStore.setWaiting(false)
     
     // 移除用户消息
     const index = chatStore.messages.findIndex(m => m.id === userMsg.id)
@@ -416,11 +423,28 @@ onUnmounted(() => {
 
 .empty-state {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
   color: var(--text-tertiary);
-  font-size: 14px;
+  
+  .empty-avatar {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  
+  .empty-greeting {
+    font-size: 16px;
+    color: var(--text-primary);
+    margin: 0 0 8px;
+  }
+  
+  .empty-hint {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin: 0;
+  }
 }
 
 .message-item {

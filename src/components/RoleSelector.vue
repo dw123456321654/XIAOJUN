@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { NButton, NTag, NAvatar, NText, NIcon } from 'naive-ui'
+import { NButton, NTag, NAvatar, NText, NIcon, useDialog } from 'naive-ui'
 import { CheckmarkCircleOutline } from '@vicons/ionicons5'
 import { useRoleStore } from '@/stores/role'
 import type { Role } from '@/types/role'
@@ -10,8 +10,8 @@ const emit = defineEmits<{
   (e: 'switched', role: Role): void
 }>()
 
+const dialog = useDialog()
 const roleStore = useRoleStore()
-const switching = ref(false)
 const justSwitched = ref<string | null>(null)
 
 const handleSwitch = async (role: Role) => {
@@ -20,23 +20,42 @@ const handleSwitch = async (role: Role) => {
     return
   }
   
-  switching.value = true
-  justSwitched.value = null
-  
-  await new Promise(resolve => setTimeout(resolve, 300))
-  
+  // 检查是否有进行中的任务
   const success = roleStore.switchRole(role.id)
   
-  if (success) {
-    justSwitched.value = role.id
-    emit('switched', role)
-    
-    setTimeout(() => {
-      emit('close')
-    }, 800)
+  if (!success) {
+    // 需要用户确认
+    showConfirmDialog(role)
+    return
   }
   
-  switching.value = false
+  // 切换成功
+  justSwitched.value = role.id
+  emit('switched', role)
+  
+  setTimeout(() => {
+    emit('close')
+  }, 800)
+}
+
+// 显示确认对话框
+const showConfirmDialog = (targetRole: Role) => {
+  dialog.warning({
+    title: '切换角色',
+    content: `${roleStore.pendingRoleName}正在工作中，尚未完成。切换角色将中断当前任务。`,
+    positiveText: '确定切换',
+    negativeText: '继续等待',
+    onPositiveClick: () => {
+      // 强制切换
+      roleStore.forceSwitchRole(targetRole.id)
+      justSwitched.value = targetRole.id
+      emit('switched', targetRole)
+      
+      setTimeout(() => {
+        emit('close')
+      }, 800)
+    }
+  })
 }
 </script>
 
