@@ -498,7 +498,9 @@ async function handleCompact() {
 
 // 新开会话
 function handleNewSession() {
-  chatStore.clearMessages()
+  // 使用当前角色创建新会话
+  const currentRoleId = chatStore.currentRoleId || roleStore.currentRole.id
+  chatStore.createSession(currentRoleId)
   message.success('已创建新会话')
 }
 
