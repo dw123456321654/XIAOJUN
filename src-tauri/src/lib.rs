@@ -175,10 +175,17 @@ async fn get_gateway_status() -> Result<serde_json::Value, String> {
                     || stdout.contains("18789")
                     || stdout.contains("ws://127.0.0.1:18789");
                 
+                // 尝试获取运行时间（秒）
+                let uptime = if running {
+                    get_gateway_uptime_seconds().unwrap_or(0)
+                } else {
+                    0
+                };
+                
                 Ok(serde_json::json!({
                     "running": running,
                     "port": 18789,
-                    "uptime": 0,
+                    "uptime": uptime,
                     "raw": stdout.to_string()
                 }))
             } else {
@@ -199,6 +206,78 @@ async fn get_gateway_status() -> Result<serde_json::Value, String> {
             }))
         }
     }
+}
+
+/// 获取 Gateway 进程运行时间（秒）
+#[cfg(target_os = "windows")]
+fn get_gateway_uptime_seconds() -> Option<u64> {
+    use std::process::Command;
+    
+    // 使用 PowerShell 获取 node 进程（Gateway）的启动时间
+    let output = Command::new("powershell")
+        .args([
+            "-Command",
+            "Get-Process -Name node -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -like '*openclaw*' -or $_.CommandLine -like '*openclaw*' } | Select-Object -First 1 -ExpandProperty StartTime"
+        ])
+        .output()
+        .ok()?;
+    
+    if output.status.success() {
+        let start_time_str = String::from_utf8_lossy(&output.stdout).trim().to_string();
+        if !start_time_str.is_empty() {
+            // 解析 PowerShell 输出的时间格式
+            // 尝试计算时间差
+            if let Ok(start_time) = chrono::DateTime::parse_from_str(&start_time_str, "%B %d, %Y %I:%M:%S %p") {
+                let now = chrono::Utc::now();
+                let duration = now.signed_duration_since(start_time.with_timezone(&chrono::Utc));
+                return Some(duration.num_seconds() as u64);
+            }
+        }
+    }
+    
+    // 备选方案：查找监听 18789 端口的进程
+    let output = Command::new("powershell")
+        .args([
+            "-Command",
+            "Get-NetTCPConnection -LocalPort 18789 -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty OwningProcess"
+        ])
+        .output()
+        .ok()?;
+    
+    if output.status.success() {
+        let pid_str = String::from_utf8_lossy(&output.stdout).trim().to_string();
+        if let Ok(pid) = pid_str.parse::<u32>() {
+            // 获取进程启动时间
+            let output = Command::new("powershell")
+                .args([
+                    "-Command",
+                    &format!("Get-Process -Id {} -ErrorAction SilentlyContinue | Select-Object -ExpandProperty StartTime", pid)
+                ])
+                .output()
+                .ok()?;
+            
+            if output.status.success() {
+                let start_time_str = String::from_utf8_lossy(&output.stdout).trim().to_string();
+                if !start_time_str.is_empty() {
+                    // 解析时间并计算差值
+                    if let Ok(start_time) = chrono::DateTime::parse_from_str(&start_time_str, "%B %d, %Y %I:%M:%S %p") {
+                        let now = chrono::Utc::now();
+                        let duration = now.signed_duration_since(start_time.with_timezone(&chrono::Utc));
+                        return Some(duration.num_seconds() as u64);
+                    }
+                }
+            }
+        }
+    }
+    
+    None
+}
+
+/// 非 Windows 平台的获取运行时间
+#[cfg(not(target_os = "windows"))]
+fn get_gateway_uptime_seconds() -> Option<u64> {
+    // TODO: 实现 Linux/macOS 版本
+    None
 }
 
 /// 读取配置
