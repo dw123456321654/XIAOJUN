@@ -107,11 +107,18 @@ export function parseTaskStart(content: string): {
 
 /**
  * 解析步骤完成消息
+ * 返回所有匹配的步骤号数组
  */
-export function parseStepDone(content: string): number | null {
-  const match = content.match(TASK_PATTERNS.STEP_DONE)
-  if (!match) return null
-  return parseInt(match[1], 10)
+export function parseStepDone(content: string): number[] {
+  const regex = /\[STEP_DONE:\s*(\d+)\]/g
+  const results: number[] = []
+  let match
+  
+  while ((match = regex.exec(content)) !== null) {
+    results.push(parseInt(match[1], 10))
+  }
+  
+  return results
 }
 
 /**

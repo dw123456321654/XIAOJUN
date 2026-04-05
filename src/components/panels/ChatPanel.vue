@@ -350,10 +350,12 @@ async function connectGateway() {
     }
     
     // 2. 解析步骤完成
-    const stepDone = parseStepDone(content)
-    if (stepDone && taskStore.currentTaskId) {
-      taskStore.completeStep(taskStore.currentTaskId, stepDone)
-      console.log('[Task] 步骤完成:', stepDone)
+    const stepDones = parseStepDone(content)
+    if (stepDones.length > 0 && taskStore.currentTaskId) {
+      stepDones.forEach(stepNum => {
+        taskStore.completeStep(taskStore.currentTaskId!, stepNum)
+        console.log('[Task] 步骤完成:', stepNum)
+      })
     }
     
     // 3. 解析任务完成
