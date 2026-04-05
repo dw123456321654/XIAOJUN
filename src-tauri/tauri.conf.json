@@ -31,8 +31,5 @@
     "icon": [
       "icons/icon.ico"
     ]
-  },
-  "plugins": {
-    "autostart": {}
   }
 }
