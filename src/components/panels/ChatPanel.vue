@@ -64,6 +64,31 @@
       </n-button>
     </div>
     
+    <!-- 底部状态栏 -->
+    <div class="status-bar">
+      <div class="status-left">
+        <span class="status-item" :class="connectionStatusClass">
+          {{ connectionStatusText }}
+        </span>
+      </div>
+      <div class="status-right">
+        <span 
+          class="status-item context-display" 
+          :class="contextStatusClass"
+          @click="handleContextClick"
+        >
+          上下文: {{ contextUsage.percentage }}% ({{ chatStore.formatContext() }})
+        </span>
+      </div>
+    </div>
+    
+    <!-- 上下文警告横幅 -->
+    <div class="context-warning" v-if="chatStore.shouldWarn && !chatStore.shouldAlert">
+      <n-alert type="warning" size="small" closable>
+        ⚠️ 上下文使用率较高 ({{ contextUsage.percentage }}%)，建议压缩或新开会话
+      </n-alert>
+    </div>
+    
     <!-- 连接状态 -->
     <div class="connection-status" v-if="!isConnected">
       <n-alert type="warning" size="small">
@@ -75,17 +100,22 @@
 
 <script setup lang="ts">
 import { ref, computed, onUnmounted, nextTick, watch } from 'vue'
-import { NInput, NButton, NIcon, NAlert, useMessage } from 'naive-ui'
+import { NInput, NButton, NIcon, NAlert, useMessage, useDialog } from 'naive-ui'
 import { SendOutline } from '@vicons/ionicons5'
 import { GatewayClient, ChatMessage, getGatewayClient } from '@/utils/gateway'
 import { useServiceStore } from '@/stores/service'
+import { useChatStore } from '@/stores/chat'
 import { readOpenClawConfig } from '@/utils/api'
 
 const message = useMessage()
+const dialog = useDialog()
 const serviceStore = useServiceStore()
+const chatStore = useChatStore()
 
-// 消息列表
-const messages = ref<ChatMessage[]>([])
+// 使用 chatStore 的消息列表
+const messages = computed(() => chatStore.messages)
+const contextUsage = computed(() => chatStore.contextUsage)
+
 const inputText = ref('')
 const isWaiting = ref(false)
 const messageListRef = ref<HTMLElement | null>(null)
@@ -99,6 +129,24 @@ const clientConnected = ref(false)
 // 连接状态（服务运行中 + 客户端已连接）
 const isConnected = computed(() => serviceStore.status === 'running' && clientConnected.value)
 
+// 连接状态显示
+const connectionStatusText = computed(() => {
+  if (serviceStore.status !== 'running') return '服务未启动'
+  if (!clientConnected.value) return '未连接'
+  return '已连接'
+})
+
+const connectionStatusClass = computed(() => {
+  if (serviceStore.status !== 'running') return 'status-error'
+  if (!clientConnected.value) return 'status-warning'
+  return 'status-ok'
+})
+
+// 上下文状态样式
+const contextStatusClass = computed(() => {
+  return `context-${chatStore.contextStatus}`
+})
+
 // 监听服务状态，自动连接
 watch(() => serviceStore.status, async (status) => {
   if (status === 'running' && !gatewayClient?.isConnected()) {
@@ -108,9 +156,28 @@ watch(() => serviceStore.status, async (status) => {
   }
 }, { immediate: true })
 
+// 监听上下文警告
+watch(() => chatStore.shouldAlert, (shouldAlert) => {
+  if (shouldAlert) {
+    showContextAlert()
+  }
+})
+
+// 显示上下文警告弹窗
+function showContextAlert() {
+  dialog.warning({
+    title: '上下文即将满',
+    content: `上下文使用率已达 ${contextUsage.value.percentage}%，建议立即新开会话，否则可能影响响应质量。`,
+    positiveText: '新开会话',
+    negativeText: '继续使用',
+    onPositiveClick: () => {
+      handleNewSession()
+    }
+  })
+}
+
 // 连接 Gateway
 async function connectGateway() {
-  // 读取 OpenClaw 配置获取 token
   const config = await readOpenClawConfig()
   console.log('[Chat] OpenClaw config:', config)
   const token = config?.gatewayToken || ''
@@ -128,47 +195,45 @@ async function connectGateway() {
   
   gatewayClient.onMessage = (msg) => {
     // 处理 content 格式：可能是字符串或数组
+    const rawContent = msg.content as unknown
     let content: string
-    if (typeof msg.content === 'string') {
-      content = msg.content
-    } else if (Array.isArray(msg.content)) {
-      // content 是数组格式: [{ type: 'text', text: '...' }]
-      content = msg.content
-        .filter((item: { type?: string; text?: string }) => item.type === 'text')
-        .map((item: { type?: string; text?: string }) => item.text || '')
+    if (typeof rawContent === 'string') {
+      content = rawContent
+    } else if (Array.isArray(rawContent)) {
+      content = (rawContent as Array<{ type?: string; text?: string }>)
+        .filter((item) => item.type === 'text')
+        .map((item) => item.text || '')
         .join('')
-    } else if (msg.content && typeof msg.content === 'object') {
-      content = JSON.stringify(msg.content, null, 2)
+    } else if (rawContent && typeof rawContent === 'object') {
+      content = JSON.stringify(rawContent, null, 2)
     } else {
-      content = String(msg.content ?? '')
+      content = String(rawContent ?? '')
     }
     
     // 处理流式消息追加
     if (msg.pending) {
-      // 流式消息，追加到最后一条 assistant 消息
-      const lastMsg = messages.value[messages.value.length - 1]
+      const lastMsg = chatStore.messages[chatStore.messages.length - 1]
       if (lastMsg && lastMsg.role === 'assistant' && lastMsg.pending) {
-        lastMsg.content += content
+        chatStore.updateLastMessage(lastMsg.content + content, true)
         scrollToBottom()
         return
       }
-      // 新的流式消息
-      messages.value.push({ ...msg, content })
+      chatStore.addMessage({ ...msg, content, pending: true })
       scrollToBottom()
       return
     }
     
     // 完整消息
-    const lastMsg = messages.value[messages.value.length - 1]
+    const lastMsg = chatStore.messages[chatStore.messages.length - 1]
     if (lastMsg && lastMsg.role === 'assistant' && lastMsg.pending) {
-      // 完成流式消息
-      lastMsg.content = content
-      lastMsg.pending = false
+      chatStore.updateLastMessage(content, false)
     } else {
-      // 添加新消息
-      messages.value.push({ ...msg, content })
+      chatStore.addMessage({ ...msg, content, pending: false })
     }
     isWaiting.value = false
+    
+    // 重新计算 token
+    chatStore.recalculateTokens()
     scrollToBottom()
   }
   
@@ -193,16 +258,18 @@ async function sendMessage() {
     content: text,
     timestamp: Date.now()
   }
-  messages.value.push(userMsg)
+  chatStore.addMessage(userMsg)
   inputText.value = ''
   isWaiting.value = true
+  
+  // 重新计算 token
+  chatStore.recalculateTokens()
   scrollToBottom()
   
   try {
     if (gatewayClient?.isConnected()) {
       await gatewayClient.sendMessage(text)
     } else {
-      // 尝试重连
       await connectGateway()
       if (gatewayClient?.isConnected()) {
         await gatewayClient.sendMessage(text)
@@ -216,12 +283,53 @@ async function sendMessage() {
     isWaiting.value = false
     
     // 移除用户消息
-    const index = messages.value.findIndex(m => m.id === userMsg.id)
+    const index = chatStore.messages.findIndex(m => m.id === userMsg.id)
     if (index > -1) {
-      messages.value.splice(index, 1)
-      inputText.value = text // 恢复输入
+      chatStore.messages.splice(index, 1)
+      inputText.value = text
     }
   }
+}
+
+// 点击上下文显示
+function handleContextClick() {
+  if (chatStore.shouldWarn) {
+    // 显示上下文管理选项
+    dialog.info({
+      title: '上下文管理',
+      content: `当前使用: ${chatStore.formatContext()} (${contextUsage.value.percentage}%)`,
+      positiveText: '压缩上下文',
+      negativeText: '新开会话',
+      onPositiveClick: () => {
+        handleCompact()
+      },
+      onNegativeClick: () => {
+        handleNewSession()
+      }
+    })
+  }
+}
+
+// 压缩上下文
+async function handleCompact() {
+  if (!gatewayClient?.isConnected()) {
+    message.warning('未连接到 Gateway')
+    return
+  }
+  
+  try {
+    await gatewayClient.sendMessage('/compact')
+    message.success('正在压缩上下文...')
+  } catch (error) {
+    console.error('[Chat] Compact error:', error)
+    message.error('压缩失败: ' + String(error))
+  }
+}
+
+// 新开会话
+function handleNewSession() {
+  chatStore.clearMessages()
+  message.success('已创建新会话')
 }
 
 // 键盘事件
@@ -243,14 +351,12 @@ function scrollToBottom() {
 
 // 格式化时间
 function formatTime(timestamp: number): string {
-  const date = new Date(timestamp)
-  return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+  return new Date(timestamp).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
 }
 
 // 格式化内容（简单的 Markdown 支持）
 function formatContent(content: unknown): string {
   if (typeof content !== 'string') {
-    // 如果 content 是对象，尝试 JSON 序列化
     if (content && typeof content === 'object') {
       return JSON.stringify(content, null, 2)
     }
@@ -431,6 +537,54 @@ onUnmounted(() => {
   padding: 16px;
   border-top: 1px solid var(--border-secondary);
   background-color: var(--bg-primary);
+}
+
+// 底部状态栏
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 16px;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-secondary);
+  font-size: 12px;
+}
+
+.status-left, .status-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-ok { color: #10b981; }
+.status-warning { color: #f59e0b; }
+.status-error { color: #ef4444; }
+
+.context-display {
+  cursor: pointer;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.context-normal { color: #10b981; }
+.context-caution { color: #f59e0b; }
+.context-warning { color: #f97316; font-weight: 500; }
+.context-critical { color: #ef4444; font-weight: 600; }
+
+.context-warning-banner {
+  padding: 0 16px;
+  
+  :deep(.n-alert) {
+    border-radius: 0;
+  }
 }
 
 .connection-status {

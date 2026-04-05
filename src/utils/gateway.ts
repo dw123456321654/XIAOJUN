@@ -154,7 +154,6 @@ export class GatewayClient {
           const payload = msg.payload as { auth?: { deviceToken?: string } }
           if (payload?.auth?.deviceToken) {
             console.log('[Gateway] Received device token')
-            // 可以存储 device token 以备后用
           }
         }
 
@@ -195,10 +194,8 @@ export class GatewayClient {
       if (msg.event === 'agent.message' || msg.event === 'chat.message') {
         this.handleChatEvent(msg)
       } else if (msg.event === 'chat') {
-        // chat 事件可能直接包含消息对象
         this.handleChatEvent(msg)
       } else if (msg.event === 'agent') {
-        // Agent 事件
         this.handleAgentEvent(msg)
       }
       return
@@ -280,7 +277,6 @@ export class GatewayClient {
    * 处理聊天事件
    */
   private handleChatEvent(msg: GatewayMessage) {
-    // chat 事件格式: { runId, sessionKey, state, message: { role, content, timestamp } }
     const payload = msg.payload as Record<string, unknown>
     const message = payload.message as Record<string, unknown> | undefined
     
@@ -294,7 +290,6 @@ export class GatewayClient {
     if (typeof message.content === 'string') {
       content = message.content
     } else if (Array.isArray(message.content)) {
-      // content 是数组格式: [{ type: 'text', text: '...' }]
       content = message.content
         .filter((item: { type?: string; text?: string }) => item.type === 'text')
         .map((item: { type?: string; text?: string }) => item.text || '')
@@ -319,15 +314,12 @@ export class GatewayClient {
    * 处理 Agent 事件
    */
   private handleAgentEvent(msg: GatewayMessage) {
-    // AgentEvent 格式: { runId, seq, stream, ts, data }
     const payload = msg.payload as Record<string, unknown>
     
-    // 忽略非内容事件
     if (!payload.data) return
     
     const data = payload.data as Record<string, unknown>
     
-    // 处理不同类型的 agent 数据
     if (data.type === 'text' || data.text) {
       const chatMsg: ChatMessage = {
         id: (payload.runId as string) || this.nextId(),
@@ -341,48 +333,9 @@ export class GatewayClient {
   }
 
   /**
-   * 处理流式聊天事件
-   */
-  private handleChatStreamEvent(msg: GatewayMessage) {
-    // ChatEvent 格式: { runId, sessionKey, seq, state, message, errorMessage, usage, stopReason }
-    const payload = msg.payload as Record<string, unknown>
-    const state = payload.state as string
-    
-    if (state === 'delta') {
-      // 流式消息增量
-      const chatMsg: ChatMessage = {
-        id: (payload.runId as string) || this.nextId(),
-        role: 'assistant',
-        content: (payload.message as string) || '',
-        timestamp: Date.now(),
-        pending: true
-      }
-      this.onMessage?.(chatMsg)
-    } else if (state === 'final') {
-      // 最终消息
-      const chatMsg: ChatMessage = {
-        id: (payload.runId as string) || this.nextId(),
-        role: 'assistant',
-        content: (payload.message as string) || '',
-        timestamp: Date.now(),
-        pending: false
-      }
-      this.onMessage?.(chatMsg)
-    } else if (state === 'error') {
-      // 错误
-      console.error('[Gateway] Chat error:', payload.errorMessage)
-    } else if (state === 'aborted') {
-      // 中止
-      console.log('[Gateway] Chat aborted')
-    }
-  }
-
-  /**
    * 发送消息
    */
   async sendMessage(content: string, sessionKey?: string): Promise<void> {
-    // chat.send 需要 sessionKey, message, idempotencyKey
-    // 如果没有 sessionKey，使用 'main' 作为默认会话
     const targetSessionKey = sessionKey || 'main'
     const idempotencyKey = `chat_${Date.now()}_${++this.requestId}`
     
