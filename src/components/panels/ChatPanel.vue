@@ -204,6 +204,18 @@ watch(() => chatStore.shouldAlert, (shouldAlert) => {
   }
 })
 
+// 监听消息变化，自动滚动到底部
+watch(() => chatStore.messages.length, () => {
+  scrollToBottom()
+})
+
+// 监听当前会话变化，滚动到底部
+watch(() => chatStore.currentSessionId, () => {
+  nextTick(() => {
+    scrollToBottom()
+  })
+})
+
 // 显示上下文警告弹窗
 function showContextAlert() {
   dialog.warning({
