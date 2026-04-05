@@ -129,9 +129,18 @@ import { GatewayClient, ChatMessage, getGatewayClient } from '@/utils/gateway'
 import { useServiceStore } from '@/stores/service'
 import { useChatStore } from '@/stores/chat'
 import { useRoleStore } from '@/stores/role'
+import { useTaskStore } from '@/stores/task'
 import { readOpenClawConfig } from '@/utils/api'
 import { exceptionMonitor } from '@/utils/exceptionMonitor'
 import { useNotification } from 'naive-ui'
+import {
+  shouldAppendTaskProtocol,
+  TASK_PROTOCOL_PROMPT,
+  parseTaskStart,
+  parseStepDone,
+  parseTaskComplete,
+  parseTaskFailed
+} from '@/config/taskProtocol'
 
 const message = useMessage()
 const dialog = useDialog()
@@ -139,6 +148,7 @@ const notification = useNotification()
 const serviceStore = useServiceStore()
 const chatStore = useChatStore()
 const roleStore = useRoleStore()
+const taskStore = useTaskStore()
 
 // 使用 chatStore 的消息列表和等待状态
 const messages = computed(() => chatStore.messages)
@@ -318,6 +328,49 @@ async function connectGateway() {
     // 清除任务超时监控
     exceptionMonitor.clearTaskMonitor()
     
+    // ========== 解析任务进度 ==========
+    
+    // 1. 解析任务开始
+    const taskStart = parseTaskStart(content)
+    if (taskStart) {
+      const task = taskStore.createTask(
+        taskStart.name,
+        taskStart.stepCount
+      )
+      taskStore.startTask(task.taskId)
+      
+      // 初始化步骤标题
+      if (taskStart.steps.length > 0) {
+        taskStore.initTaskSteps(task.taskId, 
+          taskStart.steps.map((title, i) => ({ step: i + 1, title }))
+        )
+      }
+      
+      console.log('[Task] 任务已创建:', taskStart.name, taskStart.stepCount, '步')
+    }
+    
+    // 2. 解析步骤完成
+    const stepDone = parseStepDone(content)
+    if (stepDone && taskStore.currentTaskId) {
+      taskStore.completeStep(taskStore.currentTaskId, stepDone)
+      console.log('[Task] 步骤完成:', stepDone)
+    }
+    
+    // 3. 解析任务完成
+    if (parseTaskComplete(content) && taskStore.currentTaskId) {
+      taskStore.completeTask(taskStore.currentTaskId)
+      message.success('任务已完成')
+      console.log('[Task] 任务完成')
+    }
+    
+    // 4. 解析任务失败
+    const taskFailed = parseTaskFailed(content)
+    if (taskFailed && taskStore.currentTaskId) {
+      taskStore.failTask(taskStore.currentTaskId, taskFailed)
+      message.error('任务失败: ' + taskFailed)
+      console.log('[Task] 任务失败:', taskFailed)
+    }
+    
     // 重新计算 token
     chatStore.recalculateTokens()
     scrollToBottom()
@@ -337,7 +390,13 @@ async function sendMessage() {
   const text = inputText.value.trim()
   if (!text || !isConnected.value || isWaiting.value) return
   
-  // 添加用户消息
+  // 检查是否需要追加任务协议提示
+  let finalText = text
+  if (shouldAppendTaskProtocol(text)) {
+    finalText = text + TASK_PROTOCOL_PROMPT
+  }
+  
+  // 添加用户消息（显示原始文本，不带协议提示）
   const userMsg: ChatMessage = {
     id: `user_${Date.now()}`,
     role: 'user',
@@ -359,11 +418,11 @@ async function sendMessage() {
   
   try {
     if (gatewayClient?.isConnected()) {
-      await gatewayClient.sendMessage(text, chatStore.getSessionKey())
+      await gatewayClient.sendMessage(finalText, chatStore.getSessionKey())
     } else {
       await connectGateway()
       if (gatewayClient?.isConnected()) {
-        await gatewayClient.sendMessage(text, chatStore.getSessionKey())
+        await gatewayClient.sendMessage(finalText, chatStore.getSessionKey())
       } else {
         throw new Error('未连接到 Gateway')
       }
