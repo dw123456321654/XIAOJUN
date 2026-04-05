@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
-import { NConfigProvider, NMessageProvider, NDialogProvider, zhCN, dateZhCN, darkTheme, lightTheme } from 'naive-ui'
+import { NConfigProvider, NMessageProvider, NDialogProvider, NNotificationProvider, zhCN, dateZhCN, darkTheme, lightTheme } from 'naive-ui'
 import MainLayout from './layouts/MainLayout.vue'
 import InstallGuide from './components/InstallGuide.vue'
 import { checkOpenClawInstalled } from './utils/api'
@@ -47,7 +47,8 @@ window.__clawdesk_theme__ = theme
   >
     <n-message-provider>
       <n-dialog-provider>
-        <!-- 检测中 -->
+        <n-notification-provider>
+          <!-- 检测中 -->
         <div v-if="openclawInstalled === null" class="loading-screen">
           <div class="loading-content">
             <div class="loading-spinner"></div>
@@ -58,8 +59,9 @@ window.__clawdesk_theme__ = theme
         <!-- 未安装 -->
         <InstallGuide v-else-if="openclawInstalled === false" @installed="onInstalled" />
         
-        <!-- 已安装 -->
-        <MainLayout v-else />
+          <!-- 已安装 -->
+          <MainLayout v-else />
+        </n-notification-provider>
       </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>

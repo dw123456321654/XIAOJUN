@@ -148,6 +148,10 @@ export const useChatStore = defineStore('chat', () => {
     
     currentSessionId.value = sessionId
     saveToLocalStorage()
+    
+    // 同步更新 roleStore 的当前角色
+    syncCurrentRole()
+    
     return true
   }
   
@@ -158,6 +162,9 @@ export const useChatStore = defineStore('chat', () => {
     isWaiting.value = false
     currentSessionId.value = sessionId
     saveToLocalStorage()
+    
+    // 同步更新 roleStore 的当前角色
+    syncCurrentRole()
   }
   
   /**
@@ -381,8 +388,33 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
   
+  /**
+   * 同步当前角色到 roleStore
+   */
+  function syncCurrentRole() {
+    if (!currentSession.value) return
+    
+    // 动态导入避免循环依赖
+    import('./role').then(({ useRoleStore }) => {
+      const roleStore = useRoleStore()
+      const roleId = currentSession.value?.roleId
+      
+      if (roleId && roleStore.currentRole.id !== roleId) {
+        const role = roleStore.availableRoles.find(r => r.id === roleId)
+        if (role) {
+          roleStore.currentRole = role
+          // 保存到 localStorage
+          localStorage.setItem('clawdesk-current-role-id', role.id)
+        }
+      }
+    })
+  }
+  
   // 初始化时加载
   loadFromLocalStorage()
+  
+  // 初始化后同步角色
+  syncCurrentRole()
   
   return {
     // 状态
